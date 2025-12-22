@@ -1,5 +1,5 @@
 {
     "ConnectionStrings": {
-        "LoanDatabase": "Server=.;Database=LoanSystem;Trusted_Connection=True;TrustServerCertificate=True"
+        "LoanDatabase": "Server=MSI;Database=LoanSystem;Trusted_Connection=True;TrustServerCertificate=True"
     }
 }

@@ -1,0 +1,8 @@
+﻿{
+    "JwtSettings": {
+        "Issuer": "YourIssuer",
+        "Audience": "LoanSystem.Client",
+        "Key": "0796FBFA-0863-4179-A4BF-92BC1E664B3C",
+        "AccessTokenMinutes": 60
+    }
+}

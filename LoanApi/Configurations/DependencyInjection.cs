@@ -12,6 +12,8 @@
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/database.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/database.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/security.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/security.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             return builder;
