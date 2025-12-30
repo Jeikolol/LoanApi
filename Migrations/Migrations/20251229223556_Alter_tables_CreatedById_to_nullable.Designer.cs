@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Migrations.Migrations
 {
     [DbContext(typeof(LoanDbContext))]
-    partial class LoanDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251229223556_Alter_tables_CreatedById_to_nullable")]
+    partial class Alter_tables_CreatedById_to_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

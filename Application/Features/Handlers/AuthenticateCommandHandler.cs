@@ -1,8 +1,10 @@
-﻿using Application.Features.Commands;
+﻿using Application.Exceptions;
+using Application.Features.Commands;
 using Application.Services;
 using Dapper;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -28,7 +30,7 @@ namespace Application.Features.Handlers
 
             if (string.IsNullOrWhiteSpace(_key))
             {
-                throw new InvalidOperationException("JWT Key is not configured in SecuritySettings:JwtSettings:Key");
+                throw new InternalServerException("JWT Key is not configured in SecuritySettings:JwtSettings:Key");
             }
 
             _jwt = jwt;
@@ -37,19 +39,25 @@ namespace Application.Features.Handlers
 
         public async Task<TokenResponse> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
         {
-            string query = "SELECT * FROM Employee WHERE Username = @UserName AND PasswordHash = @Password";
+            string query = "SELECT * FROM Employee WHERE Username = @UserName";
 
             var args = new
             {
                request.UserName,
-               request.Password,
                request.RememberMe
             };
 
             var employee = await _connection.QueryFirstOrDefaultAsync<Employee>(query, args);
 
             if (employee == null)
-                throw new UnauthorizedAccessException("Invalid username or password.");
+                throw new NotFoundException("Invalid username or password.");
+
+            var hasher = new PasswordHasher<Employee>();
+
+            var passRes = hasher.VerifyHashedPassword(employee, employee.PasswordHash, request.Password);
+
+            if (passRes == PasswordVerificationResult.Failed)
+                throw new UnauthorizedException("Invalid username or password.");
 
             var token = _jwt.GenerateToken(employee.Id, employee.UserName);
 

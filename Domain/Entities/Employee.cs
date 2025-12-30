@@ -17,10 +17,6 @@
         public Branch Branch { get; set; } = default!;
 
         public DateTime? LastLoginOn { get; set; }
-
-        public Employee? CreatedBy { get; set; }
-        public Employee? UpdatedBy { get; set; }
-        public Employee? DeletedBy { get; set; }
     }
 
 }

@@ -14,6 +14,10 @@
                 .AddJsonFile($"{configurationsDirectory}/database.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/security.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"{configurationsDirectory}/security.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/cors.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/cors.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/localization.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/localization.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             return builder;

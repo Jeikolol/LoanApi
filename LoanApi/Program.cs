@@ -28,7 +28,9 @@ services.AddControllers();
 builder.AddConfigurations();
 
 services.Configure<DatabaseSettings>(config);
-services.Configure<SecuritySettings>(config);
+services.Configure<JwtSettings>(
+    config.GetSection("JwtSettings")
+);
 services.Configure<RouteOptions>(options =>
 {
     options.ConstraintMap["apiVersion"] = typeof(ApiVersionRouteConstraint);
@@ -49,7 +51,7 @@ using (var scope = app.Services.CreateScope())
 //{
 //}
 
-app.UsePersistence();
+app.UseInfrastructure(config);
 
 app.UseHttpsRedirection();
 

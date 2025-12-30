@@ -14,9 +14,9 @@ namespace Application.Services
 {
     public sealed class JwtTokenService : IJwtTokenService
     {
-        private readonly SecuritySettings _settings;
+        private readonly JwtSettings _settings;
 
-        public JwtTokenService(IOptions<SecuritySettings> options)
+        public JwtTokenService(IOptions<JwtSettings> options)
         {
             _settings = options.Value;
         }
@@ -25,10 +25,10 @@ namespace Application.Services
         {
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, username),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_settings.Key));

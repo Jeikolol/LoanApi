@@ -1,13 +1,15 @@
 ﻿using Application.Interfaces;
 using Dapper;
 using Infrastructure.DataAccess;
+using Infrastructure.Middleware;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using System.Data;
-using System.Reflection;
+
 namespace Infrastructure
 {
     public static class DependencyInjection
@@ -21,10 +23,16 @@ namespace Infrastructure
                 .AddHttpContextAccessor()
                 .AddDatabase(configuration)
                 .AddPersistence(configuration)
-                .AddServices();
+                .AddServices()
+                .AddExceptionMiddleware();
 
             return services;
         }
+
+        public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config) =>
+            builder
+                .UsePersistence()
+                .UseExceptionMiddleware();
 
         public static async Task InitSeeder(this IServiceProvider service)
         {
@@ -115,6 +123,12 @@ namespace Infrastructure
                 ServiceLifetime.Singleton => services.AddSingleton(serviceType, implementationType),
                 _ => throw new ArgumentException("Invalid lifeTime", nameof(lifetime))
             };
+
+        internal static IServiceCollection AddExceptionMiddleware(this IServiceCollection services) =>
+        services.AddScoped<ExceptionMiddleware>();
+
+        internal static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder app) =>
+            app.UseMiddleware<ExceptionMiddleware>();
 
         private sealed class DateOnlyHandler : SqlMapper.TypeHandler<DateOnly>
         {

@@ -20,7 +20,7 @@ namespace Persistence.EntityConfigurations
             base.Configure(builder);
 
             builder.HasOne(x => x.Customer)
-                   .WithMany()
+                   .WithMany(x => x.Loans)
                    .HasForeignKey(x => x.CustomerId)
                    .OnDelete(DeleteBehavior.Restrict);
 

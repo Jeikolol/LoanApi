@@ -30,7 +30,7 @@ namespace Persistence.EntityConfigurations
                   .IsRequired();
 
             builder.Property(x => x.CreatedById)
-                   .IsRequired();
+                   .IsRequired(false);
 
             builder.Property(x => x.UpdatedOn)
                    .IsRequired(false);
