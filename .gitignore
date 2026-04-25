@@ -361,3 +361,78 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Local Development
+appsettings.Development.json
+appsettings.local.json
+appsettings.*.local.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.mdf
+*.ldf
+*.ndf
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE - VS Code
+.vscode/
+launch.json
+settings.json
+
+# IDE - Rider
+.idea/
+.idea_modules/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - Other
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+.tmp/
+tmp/
+temp/
+*.tmp
+
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+publish/
+PublishProfiles/
+*.publish.xml
+
+# NuGet
+.nuget/
+nuget.exe
+
+# Secrets & Keys
+*.pem
+*.key
+*.cert
+appsettings.secrets.json
+secrets.json
+
+# User-specific settings
+launchSettings.Development.json
+.vscode-settings.json
+settings.local.json
+
+# EditorConfig cache
+.EditorConfig
