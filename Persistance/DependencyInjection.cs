@@ -116,7 +116,7 @@ namespace Persistence
             var corsSettings = config.GetSection(nameof(CorsSettings)).Get<CorsSettings>();
             var origins = new List<string>();
 
-            if (corsSettings.React is not null)
+            if (corsSettings != null && corsSettings.React != null)
                 origins.AddRange(corsSettings.React.Split(';', StringSplitOptions.RemoveEmptyEntries));
 
             return services.AddCors(opt =>

@@ -6,7 +6,7 @@ namespace Persistence.EntityConfigurations
 {
     public class BranchConfig : AuditableConfiguration<Branch, Guid>
     {
-        public BranchConfig() : base(tableName: nameof(Branch))
+        public BranchConfig() : base(SchemaNames.Admin, nameof(Branch))
         {
         }
 

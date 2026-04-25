@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace Application
@@ -11,6 +12,10 @@ namespace Application
             {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             });
+
+            services.AddScoped<LoanValidationService>();
+            services.AddScoped<DelinquencyService>();
+            services.AddScoped<CreditScoreService>();
 
             return services;
         }

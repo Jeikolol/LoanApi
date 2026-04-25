@@ -19,11 +19,39 @@ namespace Domain.Entities
 
         public string Address { get; set; } = string.Empty;
         public string Province { get; set; } = string.Empty;
-        public string Country { get; set; } = "DO";
+
+        public Guid CountryId { get; set; }
+        public Country Country { get; set; } = default!;
+
+        public Guid NationalityCountryId { get; set; }
+        public Country? NationalityCountry { get; set; }
 
         public CustomerStatus Status { get; set; }
 
+        // Additional required fields for Dominican compliance
+        public string Occupation { get; set; } = string.Empty;
+
+        // Financial profile
+        public decimal? AnnualIncome { get; set; }
+        public IncomeSource? IncomeSource { get; set; }
+        public decimal CreditLimit { get; set; }
+
+        // Risk assessment
+        public RiskLevel? RiskLevel { get; set; }
+        public string? BlacklistReason { get; set; }
+        public bool IsBlacklisted { get; set; } = false;
+
+        // Contact details for compliance
+        public string? AlternativePhone { get; set; }
+        public string? EmergencyContactName { get; set; }
+        public string? EmergencyContactPhone { get; set; }
+
+        // Tax ID (RNC - Registro Nacional del Contribuyente)
+        public string? TaxId { get; set; }
+
+        // Collections
         public ICollection<Loan> Loans { get; set; } = new List<Loan>();
+        public CreditScore? CreditScore { get; set; }
     }
 
 }

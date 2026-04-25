@@ -6,7 +6,7 @@ namespace Persistence.EntityConfigurations
 {
     public class EmployeesConfig : AuditableConfiguration<Employee, Guid>
     {
-        public EmployeesConfig() : base(tableName: nameof(Employee))
+        public EmployeesConfig() : base(SchemaNames.Admin, nameof(Employee))
         {
         }
 

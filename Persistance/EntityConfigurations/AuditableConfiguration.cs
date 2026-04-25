@@ -44,10 +44,15 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.DeletedById)
                    .IsRequired(false);
 
+            builder.Property(x => x.IsActive)
+                   .HasDefaultValue(true)
+                   .IsRequired();
+
             builder.Property(x => x.IsDeleted)
                    .HasDefaultValue(false)
                    .IsRequired();
 
+            builder.HasIndex(x => x.IsActive);
             builder.HasIndex(x => x.IsDeleted);
             builder.HasIndex(x => x.CreatedOn);
 

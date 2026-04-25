@@ -5,7 +5,7 @@ namespace Persistence.EntityConfigurations
 {
     public class RoleConfig : AuditableConfiguration<Role, Guid>
     {
-        public RoleConfig() : base(tableName: nameof(Role))
+        public RoleConfig() : base(SchemaNames.Admin, nameof(Role))
         {
         }
 

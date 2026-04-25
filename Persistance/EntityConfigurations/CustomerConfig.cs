@@ -6,7 +6,7 @@ namespace Persistence.EntityConfigurations
 {
     public class CustomerConfig : AuditableConfiguration<Customer, Guid>
     {
-        public CustomerConfig() : base(tableName: nameof(Customer))
+        public CustomerConfig() : base(SchemaNames.Customers, nameof(Customer))
         {
         }
 
@@ -72,9 +72,60 @@ namespace Persistence.EntityConfigurations
                    .HasMaxLength(100)
                    .IsRequired();
 
-            builder.Property(x => x.Country)
-                   .HasMaxLength(2)
+            builder.HasOne(x => x.Country)
+                   .WithMany(x => x.Customers)
+                   .HasForeignKey(x => x.CountryId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.NationalityCountry)
+                   .WithMany(x => x.CustomersNationality)
+                   .HasForeignKey(x => x.NationalityCountryId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            // =========================
+            // Dominican compliance
+            // =========================
+            builder.Property(x => x.Occupation)
+                   .HasMaxLength(100)
+                   .IsRequired(false);
+
+            builder.Property(x => x.AnnualIncome)
+                   .HasPrecision(18, 2)
+                   .IsRequired(false);
+
+            builder.Property(x => x.IncomeSource)
+                   .IsRequired(false);
+
+            builder.Property(x => x.CreditLimit)
+                   .HasPrecision(18, 2)
                    .IsRequired();
+
+            builder.Property(x => x.RiskLevel)
+                   .IsRequired(false);
+
+            builder.Property(x => x.BlacklistReason)
+                   .HasMaxLength(500)
+                   .IsRequired(false);
+
+            builder.Property(x => x.IsBlacklisted)
+                   .IsRequired()
+                   .HasDefaultValue(false);
+
+            builder.Property(x => x.AlternativePhone)
+                   .HasMaxLength(15)
+                   .IsRequired(false);
+
+            builder.Property(x => x.EmergencyContactName)
+                   .HasMaxLength(100)
+                   .IsRequired(false);
+
+            builder.Property(x => x.EmergencyContactPhone)
+                   .HasMaxLength(15)
+                   .IsRequired(false);
+
+            builder.Property(x => x.TaxId)
+                   .HasMaxLength(50)
+                   .IsRequired(false);
 
             // =========================
             // Status & enums
@@ -91,6 +142,11 @@ namespace Persistence.EntityConfigurations
             builder.HasMany(x => x.Loans)
                    .WithOne(x => x.Customer)
                    .HasForeignKey(x => x.CustomerId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.CreditScore)
+                   .WithOne(x => x.Customer)
+                   .HasForeignKey<CreditScore>(x => x.CustomerId)
                    .OnDelete(DeleteBehavior.Restrict);
         }
     }

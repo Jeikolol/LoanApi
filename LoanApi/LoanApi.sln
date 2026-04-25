@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36705.20
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11709.299 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanApi", "LoanApi.csproj", "{7CF3A500-59A3-4491-B4D9-12DE9BD3C895}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "..\Infrastructure\Infrastructure.csproj", "{CA8EF001-7F3D-41BB-83A3-DE811AFB4B5F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "..\Application\Application.csproj", "{AB5C4585-7D18-4F34-8770-D50D4DAB0C14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanApi.Test", "..\LoanApi.Test\LoanApi.Test.csproj", "{9EF16497-B22E-4B16-A0A3-CD6485AD7FE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AB5C4585-7D18-4F34-8770-D50D4DAB0C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB5C4585-7D18-4F34-8770-D50D4DAB0C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB5C4585-7D18-4F34-8770-D50D4DAB0C14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EF16497-B22E-4B16-A0A3-CD6485AD7FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EF16497-B22E-4B16-A0A3-CD6485AD7FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EF16497-B22E-4B16-A0A3-CD6485AD7FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EF16497-B22E-4B16-A0A3-CD6485AD7FE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

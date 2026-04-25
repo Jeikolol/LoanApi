@@ -4,6 +4,8 @@ using Infrastructure;
 using LoanApi.Configurations;
 using Persistence;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
 {
@@ -21,9 +23,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 var config = builder.Configuration;
-// Add services to the container.
 
-services.AddControllers();
+services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.AddConfigurations();
 
@@ -39,6 +45,9 @@ services.Configure<RouteOptions>(options =>
 services.AddInfrastructure(config);
 services.AddApplication();
 
+// Add Swagger/OpenAPI
+services.AddSwaggerGen();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -47,9 +56,15 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LoanWeb API v1");
+        options.RoutePrefix = string.Empty; // Makes Swagger UI the default page
+    });
+}
 
 app.UseInfrastructure(config);
 

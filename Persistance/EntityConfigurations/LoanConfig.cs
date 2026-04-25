@@ -11,7 +11,7 @@ namespace Persistence.EntityConfigurations
 {
     public class LoanConfig : AuditableConfiguration<Loan, Guid>
     {
-        public LoanConfig() : base(tableName: nameof(Loan))
+        public LoanConfig() : base(SchemaNames.Loans, nameof(Loan))
         {
         }
 
@@ -27,6 +27,11 @@ namespace Persistence.EntityConfigurations
             builder.HasOne(x => x.Branch)
                    .WithMany()
                    .HasForeignKey(x => x.BranchId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.Currency)
+                   .WithMany(x => x.Loans)
+                   .HasForeignKey(x => x.CurrencyId)
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(x => x.LoanNumber)
@@ -55,6 +60,69 @@ namespace Persistence.EntityConfigurations
 
             builder.Property(x => x.MaturityDate)
                    .IsRequired();
+
+            builder.Property(x => x.NextPaymentDueDate)
+                   .IsRequired();
+
+            builder.Property(x => x.DaysOverdue)
+                   .IsRequired()
+                   .HasDefaultValue(0);
+
+            builder.Property(x => x.DelinquencyPercentage)
+                   .IsRequired()
+                   .HasDefaultValue(0m)
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.LastPaymentDate)
+                   .IsRequired(false);
+
+            builder.Property(x => x.TotalInterestAmount)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.PaidInterest)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.RemainingInterest)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.AmortizationBalance)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.PrincipalPaid)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.PrincipalRemaining)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.LoanPurpose)
+                   .IsRequired(false);
+
+            builder.Property(x => x.MaxCredit)
+                   .IsRequired()
+                   .HasPrecision(18, 2);
+
+            builder.Property(x => x.RequiresGuarantor)
+                   .IsRequired()
+                   .HasDefaultValue(false);
+
+            builder.Property(x => x.GuarantorId)
+                   .IsRequired(false);
+
+            builder.HasMany(x => x.Payments)
+                   .WithOne(x => x.Loan)
+                   .HasForeignKey(x => x.LoanId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.Documents)
+                   .WithOne(x => x.Loan)
+                   .HasForeignKey(x => x.LoanId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

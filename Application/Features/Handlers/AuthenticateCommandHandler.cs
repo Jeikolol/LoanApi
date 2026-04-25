@@ -6,12 +6,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.Handlers
 {
@@ -39,7 +34,7 @@ namespace Application.Features.Handlers
 
         public async Task<TokenResponse> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
         {
-            string query = "SELECT * FROM Employee WHERE Username = @UserName";
+            string query = "SELECT * FROM Admin.Employee WHERE Username = @UserName";
 
             var args = new
             {
