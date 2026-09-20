@@ -7,6 +7,9 @@ using System.Data;
 
 namespace Application.Features.Delinquency.Handlers
 {
+    internal record ChargeLoanQueryResult(Guid Id, string LoanNumber, int DaysOverdue, int LoanStatus, decimal InstallmentAmount);
+    internal record ChargePolicyQueryResult(decimal DailyPenaltyRate);
+
     public class ChargeLateFeeCommandHandler : IRequestHandler<ChargeLateFeeCommand, DelinquencyStatusResponse>
     {
         private readonly IDbConnection _connection;
@@ -27,7 +30,7 @@ namespace Application.Features.Delinquency.Handlers
                 FROM [Loans].[Loan]
                 WHERE Id = @LoanId AND IsDeleted = 0";
 
-            var loan = await _connection.QuerySingleOrDefaultAsync<dynamic>(loanSql, new { request.LoanId });
+            var loan = await _connection.QuerySingleOrDefaultAsync<ChargeLoanQueryResult>(loanSql, new { request.LoanId });
             if (loan == null)
                 throw new InvalidOperationException($"Loan {request.LoanId} not found");
 
@@ -35,8 +38,8 @@ namespace Application.Features.Delinquency.Handlers
                 SELECT TOP 1 DailyPenaltyRate FROM [Loans].[DelinquencyPolicy]
                 WHERE IsActive = 1 AND IsDeleted = 0";
 
-            var policy = await _connection.QuerySingleOrDefaultAsync<dynamic>(policySql);
-            var lateFee = (decimal?)policy?.DailyPenaltyRate ?? 0.001m;
+            var policy = await _connection.QuerySingleOrDefaultAsync<ChargePolicyQueryResult>(policySql);
+            var lateFee = policy?.DailyPenaltyRate ?? 0.001m;
             var feeAmount = loan.InstallmentAmount * lateFee * Math.Max(1, loan.DaysOverdue);
 
             const string updateSql = @"

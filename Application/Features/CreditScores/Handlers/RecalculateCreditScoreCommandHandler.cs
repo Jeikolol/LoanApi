@@ -10,6 +10,10 @@ using System.Data;
 
 namespace Application.Features.CreditScores.Handlers
 {
+    internal record RecalculateCustomerQueryResult(Guid Id, string FirstName, string LastName, decimal CreditLimit, bool IsBlacklisted);
+    internal record RecalculateLoanQueryResult(Guid Id, DateTime CreatedOn, decimal PrincipalRemaining, int LoanStatus);
+    internal record RecalculatePaymentQueryResult(Guid Id, Guid LoanId, int Status);
+
     public class RecalculateCreditScoreCommandHandler : IRequestHandler<RecalculateCreditScoreCommand, CreditScoreResponse>
     {
         private readonly IDbConnection _connection;
@@ -32,7 +36,7 @@ namespace Application.Features.CreditScores.Handlers
                 FROM [Customers].[Customer]
                 WHERE Id = @CustomerId AND IsDeleted = 0";
 
-            var customerData = await _connection.QuerySingleOrDefaultAsync<dynamic>(
+            var customerData = await _connection.QuerySingleOrDefaultAsync<RecalculateCustomerQueryResult>(
                 customerSql, new { request.CustomerId });
             if (customerData == null)
                 throw new InvalidOperationException($"Customer {request.CustomerId} not found");
@@ -42,7 +46,7 @@ namespace Application.Features.CreditScores.Handlers
                 FROM [Loans].[Loan]
                 WHERE CustomerId = @CustomerId AND IsDeleted = 0";
 
-            var loans = (await _connection.QueryAsync<dynamic>(
+            var loans = (await _connection.QueryAsync<RecalculateLoanQueryResult>(
                 loansSql, new { request.CustomerId })).ToList();
 
             const string paymentsSql = @"
@@ -51,7 +55,7 @@ namespace Application.Features.CreditScores.Handlers
                 WHERE lp.LoanId IN (SELECT Id FROM [Loans].[Loan] WHERE CustomerId = @CustomerId AND IsDeleted = 0)
                 AND lp.IsDeleted = 0";
 
-            var payments = (await _connection.QueryAsync<dynamic>(
+            var payments = (await _connection.QueryAsync<RecalculatePaymentQueryResult>(
                 paymentsSql, new { request.CustomerId })).ToList();
 
             var customer = new Customer

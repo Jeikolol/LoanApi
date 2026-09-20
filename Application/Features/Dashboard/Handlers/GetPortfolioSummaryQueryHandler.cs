@@ -7,6 +7,8 @@ using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
+    internal record PortfolioSummaryQueryResult(decimal TotalPortfolio, decimal DelinquencyRate, int ActiveCredits, decimal MonthlyCollections);
+
     public class GetPortfolioSummaryQueryHandler : IRequestHandler<GetPortfolioSummaryQuery, PortfolioSummaryResponse>
     {
         private readonly IDbConnection _connection;
@@ -33,13 +35,16 @@ namespace Application.Features.Dashboard.Handlers
                 FROM [Loans].[Loan]
                 WHERE IsDeleted = 0";
 
-            var result = await _connection.QuerySingleOrDefaultAsync<dynamic>(sql);
+            var result = await _connection.QuerySingleOrDefaultAsync<PortfolioSummaryQueryResult>(sql);
+
+            if (result == null)
+                return new PortfolioSummaryResponse(0, 0, 0, 0);
 
             return new PortfolioSummaryResponse(
-                (long)(result?.TotalPortfolio ?? 0m),
-                (decimal)(result?.DelinquencyRate ?? 0m),
-                (int)(result?.ActiveCredits ?? 0),
-                (long)(result?.MonthlyCollections ?? 0m)
+                (long)result.TotalPortfolio,
+                result.DelinquencyRate,
+                result.ActiveCredits,
+                (long)result.MonthlyCollections
             );
         }
     }

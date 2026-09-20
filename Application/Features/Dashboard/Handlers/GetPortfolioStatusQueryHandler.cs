@@ -7,6 +7,8 @@ using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
+    internal record PortfolioStatusQueryResult(int Active, int Delinquent, int Approved, int WrittenOff);
+
     public class GetPortfolioStatusQueryHandler : IRequestHandler<GetPortfolioStatusQuery, PortfolioStatusItemResponse[]>
     {
         private readonly IDbConnection _connection;
@@ -27,14 +29,17 @@ namespace Application.Features.Dashboard.Handlers
                 FROM [Loans].[Loan]
                 WHERE IsDeleted = 0";
 
-            var result = await _connection.QuerySingleOrDefaultAsync<dynamic>(sql);
+            var result = await _connection.QuerySingleOrDefaultAsync<PortfolioStatusQueryResult>(sql);
+
+            if (result == null)
+                return Array.Empty<PortfolioStatusItemResponse>();
 
             return new[]
             {
-                new PortfolioStatusItemResponse("Active", result?.Active ?? 0, PortfolioStatusColors.Active),
-                new PortfolioStatusItemResponse("Delinquent", result?.Delinquent ?? 0, PortfolioStatusColors.Delinquent),
-                new PortfolioStatusItemResponse("Approved", result?.Approved ?? 0, PortfolioStatusColors.Approved),
-                new PortfolioStatusItemResponse("Written Off", result?.WrittenOff ?? 0, PortfolioStatusColors.WrittenOff)
+                new PortfolioStatusItemResponse("Active", result.Active, PortfolioStatusColors.Active),
+                new PortfolioStatusItemResponse("Delinquent", result.Delinquent, PortfolioStatusColors.Delinquent),
+                new PortfolioStatusItemResponse("Approved", result.Approved, PortfolioStatusColors.Approved),
+                new PortfolioStatusItemResponse("Written Off", result.WrittenOff, PortfolioStatusColors.WrittenOff)
             };
         }
     }

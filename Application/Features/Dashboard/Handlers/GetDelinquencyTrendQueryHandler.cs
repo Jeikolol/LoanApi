@@ -6,6 +6,8 @@ using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
+    internal record DelinquencyTrendQueryResult(string Label, decimal CurrentDaysOverdueAvg, decimal PreviousDaysOverdueAvg);
+
     public class GetDelinquencyTrendQueryHandler : IRequestHandler<GetDelinquencyTrendQuery, DelinquencyTrendResponse>
     {
         private readonly IDbConnection _connection;
@@ -37,11 +39,11 @@ namespace Application.Features.Dashboard.Handlers
                 FROM DailyAverage
                 ORDER BY [Date] DESC";
 
-            var trends = (await _connection.QueryAsync<dynamic>(sql)).ToList();
+            var trends = (await _connection.QueryAsync<DelinquencyTrendQueryResult>(sql)).ToList();
 
-            var labels = trends.Select(t => (string)t.Label).ToArray();
-            var currentMonth = trends.Select(t => (decimal)(t.CurrentDaysOverdueAvg ?? 0m)).ToArray();
-            var previousMonth = trends.Select(t => (decimal)(t.PreviousDaysOverdueAvg ?? 0m)).ToArray();
+            var labels = trends.Select(t => t.Label).ToArray();
+            var currentMonth = trends.Select(t => t.CurrentDaysOverdueAvg).ToArray();
+            var previousMonth = trends.Select(t => t.PreviousDaysOverdueAvg).ToArray();
 
             return new DelinquencyTrendResponse(labels, currentMonth, previousMonth);
         }

@@ -6,6 +6,8 @@ using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
+    internal record BranchPortfolioQueryResult(string Branch, long Portfolio, decimal DelinquencyRate, int OpenTickets);
+
     public class GetBranchPortfolioQueryHandler : IRequestHandler<GetBranchPortfolioQuery, BranchPortfolioItemResponse[]>
     {
         private readonly IDbConnection _connection;

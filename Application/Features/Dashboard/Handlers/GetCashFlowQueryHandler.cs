@@ -6,6 +6,8 @@ using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
+    internal record CashFlowQueryResult(string WeekLabel, decimal Disbursements, decimal Collections);
+
     public class GetCashFlowQueryHandler : IRequestHandler<GetCashFlowQuery, CashFlowResponse>
     {
         private readonly IDbConnection _connection;
@@ -37,11 +39,11 @@ namespace Application.Features.Dashboard.Handlers
                 GROUP BY w.WeekNum, w.WeekLabel, w.WeekDate
                 ORDER BY w.WeekNum";
 
-            var cashFlows = (await _connection.QueryAsync<dynamic>(sql)).ToList();
+            var cashFlows = (await _connection.QueryAsync<CashFlowQueryResult>(sql)).ToList();
 
-            var labels = cashFlows.Select(c => (string)c.WeekLabel).ToArray();
-            var disbursements = cashFlows.Select(c => (decimal)(c.Disbursements ?? 0m)).ToArray();
-            var collections = cashFlows.Select(c => (decimal)(c.Collections ?? 0m)).ToArray();
+            var labels = cashFlows.Select(c => c.WeekLabel).ToArray();
+            var disbursements = cashFlows.Select(c => c.Disbursements).ToArray();
+            var collections = cashFlows.Select(c => c.Collections).ToArray();
 
             return new CashFlowResponse(labels, disbursements, collections);
         }

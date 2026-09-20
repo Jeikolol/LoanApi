@@ -8,14 +8,13 @@ using Application.Features.Customers.Commands;
 namespace LoanApi.Controllers.Modules.Customers
 {
     [Authorize]
-    [Route("customers")]
     public class CustomersController : CustomerModuleController
     {
         /// <summary>
         /// Get customer by ID
         /// </summary>
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> Get(string id)
         {
             var query = new GetCustomerByIdQuery(id);
             var result = await Mediator.Send(query);
@@ -25,8 +24,8 @@ namespace LoanApi.Controllers.Modules.Customers
         /// <summary>
         /// Update customer
         /// </summary>
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCustomerRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateCustomerRequest request)
         {
             var command = new UpdateCustomerCommand
             {

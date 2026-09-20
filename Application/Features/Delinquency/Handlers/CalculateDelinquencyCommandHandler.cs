@@ -9,6 +9,9 @@ using System.Data;
 
 namespace Application.Features.Delinquency.Handlers
 {
+    internal record CalculateLoanQueryResult(Guid Id, string LoanNumber, DateOnly NextPaymentDueDate, decimal PrincipalRemaining, int LoanStatus, int DaysOverdue, decimal DelinquencyPercentage);
+    internal record CalculatePolicyQueryResult(Guid Id, int DaysUntilEarlyDelinquency, decimal EarlyDelinquencyPenalty, int DaysUntilSevereDelinquency, decimal SevereDelinquencyPenalty, int DaysUntilWriteOff);
+
     public class CalculateDelinquencyCommandHandler : IRequestHandler<CalculateDelinquencyCommand, DelinquencyStatusResponse>
     {
         private readonly IDbConnection _connection;
@@ -32,7 +35,7 @@ namespace Application.Features.Delinquency.Handlers
                 FROM [Loans].[Loan]
                 WHERE Id = @LoanId AND IsDeleted = 0";
 
-            var loan = await _connection.QuerySingleOrDefaultAsync<dynamic>(loanSql, new { request.LoanId });
+            var loan = await _connection.QuerySingleOrDefaultAsync<CalculateLoanQueryResult>(loanSql, new { request.LoanId });
             if (loan == null)
                 throw new InvalidOperationException($"Loan {request.LoanId} not found");
 
@@ -43,7 +46,7 @@ namespace Application.Features.Delinquency.Handlers
                 WHERE IsActive = 1 AND IsDeleted = 0
                 ORDER BY CreatedOn DESC";
 
-            var policy = await _connection.QuerySingleOrDefaultAsync<dynamic>(policySql);
+            var policy = await _connection.QuerySingleOrDefaultAsync<CalculatePolicyQueryResult>(policySql);
             if (policy == null)
                 throw new InvalidOperationException("No active delinquency policy found");
 

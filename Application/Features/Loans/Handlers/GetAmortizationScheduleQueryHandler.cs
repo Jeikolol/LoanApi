@@ -7,6 +7,8 @@ using System.Data;
 
 namespace Application.Features.Loans.Handlers
 {
+    internal record AmortizationLoanQueryResult(decimal PrincipalAmount, decimal InterestRate, int TermMonths, DateTime DisbursementDate);
+
     public class GetAmortizationScheduleQueryHandler : IRequestHandler<GetAmortizationScheduleQuery, List<AmortizationScheduleItem>>
     {
         private readonly IDbConnection _connection;
@@ -32,7 +34,7 @@ namespace Application.Features.Loans.Handlers
                 FROM [Loans].[Loan]
                 WHERE Id = @LoanId AND IsDeleted = 0";
 
-            var loan = await _connection.QuerySingleOrDefaultAsync<dynamic>(sql, new { request.LoanId });
+            var loan = await _connection.QuerySingleOrDefaultAsync<AmortizationLoanQueryResult>(sql, new { request.LoanId });
             if (loan == null)
                 throw new InvalidOperationException($"Loan {request.LoanId} not found");
 
@@ -41,10 +43,9 @@ namespace Application.Features.Loans.Handlers
                 loan.InterestRate,
                 loan.TermMonths);
 
-            var disbursementDate = (DateTime)loan.DisbursementDate;
             for (int i = 0; i < schedule.Count; i++)
             {
-                schedule[i].DueDate = disbursementDate.AddMonths(i + 1);
+                schedule[i].DueDate = loan.DisbursementDate.AddMonths(i + 1);
                 schedule[i].TotalPayment = schedule[i].PrincipalPayment + schedule[i].InterestPayment;
             }
 
