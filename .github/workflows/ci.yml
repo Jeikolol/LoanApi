@@ -30,7 +30,7 @@ jobs:
       LOANWEB_TEST_SQL: "Server=localhost,1433;User Id=sa;Password=Ci-Passw0rd!Loan;TrustServerCertificate=true"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 9.0.x
       - name: Restore
