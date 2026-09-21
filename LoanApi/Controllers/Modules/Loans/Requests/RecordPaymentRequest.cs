@@ -1,3 +1,5 @@
+using Domain.Enums;
+
 namespace LoanApi.Controllers.Modules.Loans.Requests
 {
     public class RecordPaymentRequest
@@ -5,7 +7,7 @@ namespace LoanApi.Controllers.Modules.Loans.Requests
         public decimal PrincipalAmount { get; set; }
         public decimal InterestAmount { get; set; }
         public decimal PenaltyAmount { get; set; }
-        public string PaymentMethod { get; set; } = "Bank Transfer";
+        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.BankTransfer;
         public string? ReferenceNumber { get; set; }
     }
 }

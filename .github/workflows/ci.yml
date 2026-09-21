@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (build + tests + SQL Server integration)
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "Ci-Passw0rd!Loan"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Ci-Passw0rd!Loan -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      LOANWEB_TEST_SQL: "Server=localhost,1433;User Id=sa;Password=Ci-Passw0rd!Loan;TrustServerCertificate=true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore
+        run: dotnet restore LoanApi.sln
+      - name: Build
+        run: dotnet build LoanApi.sln --configuration Release --no-restore
+      - name: Test (unit + SQL Server integration)
+        run: dotnet test LoanApi.Test/LoanApi.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=results.trx"
+      - name: Vulnerable packages
+        run: |
+          dotnet list LoanApi.sln package --vulnerable --include-transitive 2>&1 | tee vulns.txt
+          ! grep -q "has the following vulnerable packages" vulns.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results
+          path: "**/results.trx"

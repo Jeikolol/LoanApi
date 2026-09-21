@@ -1,8 +1,10 @@
+using Application.Exceptions;
 using Application.Features.Delinquency.Commands;
 using Application.Models.Responses;
 using Application.Services;
 using Dapper;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Data;
@@ -10,7 +12,7 @@ using System.Data;
 namespace Application.Features.Delinquency.Handlers
 {
     internal record CalculateLoanQueryResult(Guid Id, string LoanNumber, DateOnly NextPaymentDueDate, decimal PrincipalRemaining, int LoanStatus, int DaysOverdue, decimal DelinquencyPercentage);
-    internal record CalculatePolicyQueryResult(Guid Id, int DaysUntilEarlyDelinquency, decimal EarlyDelinquencyPenalty, int DaysUntilSevereDelinquency, decimal SevereDelinquencyPenalty, int DaysUntilWriteOff);
+    internal record CalculatePolicyQueryResult(Guid Id, int DaysUntilEarlyDelinquency, decimal EarlyDelinquencyPenalty, int DaysUntilSevereDelinquency, decimal SevereDelinquencyPenalty, int DaysUntilWriteOff, decimal DailyPenaltyRate);
 
     public class CalculateDelinquencyCommandHandler : IRequestHandler<CalculateDelinquencyCommand, DelinquencyStatusResponse>
     {
@@ -37,21 +39,28 @@ namespace Application.Features.Delinquency.Handlers
 
             var loan = await _connection.QuerySingleOrDefaultAsync<CalculateLoanQueryResult>(loanSql, new { request.LoanId });
             if (loan == null)
-                throw new InvalidOperationException($"Loan {request.LoanId} not found");
+                throw new NotFoundException($"Loan {request.LoanId} not found");
+
+            if (!DelinquencyRules.IsCollectable((LoanStatus)loan.LoanStatus))
+            {
+                return new DelinquencyStatusResponse(
+                    request.LoanId, loan.LoanNumber, loan.DaysOverdue, loan.DelinquencyPercentage, (LoanStatus)loan.LoanStatus);
+            }
 
             const string policySql = @"
                 SELECT TOP 1 Id, DaysUntilEarlyDelinquency, EarlyDelinquencyPenalty,
-                       DaysUntilSevereDelinquency, SevereDelinquencyPenalty, DaysUntilWriteOff
+                       DaysUntilSevereDelinquency, SevereDelinquencyPenalty, DaysUntilWriteOff, DailyPenaltyRate
                 FROM [Loans].[DelinquencyPolicy]
                 WHERE IsActive = 1 AND IsDeleted = 0
                 ORDER BY CreatedOn DESC";
 
             var policy = await _connection.QuerySingleOrDefaultAsync<CalculatePolicyQueryResult>(policySql);
             if (policy == null)
-                throw new InvalidOperationException("No active delinquency policy found");
+                throw new ConflictException("No active delinquency policy is configured.");
 
             var daysOverdue = (DateTime.UtcNow.Date - loan.NextPaymentDueDate.ToDateTime(TimeOnly.MinValue)).Days;
-            var newStatus = daysOverdue > policy.DaysUntilWriteOff ? 7 : (daysOverdue > 0 ? 6 : loan.LoanStatus);
+            decimal percentage = LateFeeRules.DelinquencyPercentage(daysOverdue, policy.DailyPenaltyRate);
+            var newStatus = (int)DelinquencyRules.NextStatus((LoanStatus)loan.LoanStatus, daysOverdue);
 
             const string updateSql = @"
                 UPDATE [Loans].[Loan]
@@ -64,7 +73,7 @@ namespace Application.Features.Delinquency.Handlers
             await _connection.ExecuteAsync(updateSql, new
             {
                 DaysOverdue = Math.Max(0, daysOverdue),
-                DelinquencyPercentage = daysOverdue > 0 ? (daysOverdue / 30m) * 100 : 0,
+                DelinquencyPercentage = percentage,
                 LoanStatus = newStatus,
                 request.LoanId,
                 Now = DateTime.UtcNow
@@ -74,8 +83,8 @@ namespace Application.Features.Delinquency.Handlers
                 request.LoanId,
                 loan.LoanNumber,
                 Math.Max(0, daysOverdue),
-                daysOverdue > 0 ? (daysOverdue / 30m) * 100 : 0,
-                (Domain.Enums.LoanStatus)newStatus
+                percentage,
+                (LoanStatus)newStatus
             );
         }
     }

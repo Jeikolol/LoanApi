@@ -1,49 +1,36 @@
-using Bogus;
+using Application.Services;
 using Domain.Entities;
-using Domain.Enums;
-using System;
-using System.Collections.Generic;
 
 namespace Application.FakeData
 {
     public static class FakeDbQueryCreditScores
     {
-        public static IEnumerable<CreditScore> GenerateCreditScores(IEnumerable<Customer> customers)
+        /// <summary>
+        /// Runs each customer's loan history through the same <see cref="CreditScoreService"/> the application uses
+        /// when a score is recalculated, so a seeded score is exactly what "recalculate" would produce.
+        /// Customers with no loans have no history and therefore no score.
+        /// </summary>
+        public static IReadOnlyList<CreditScore> Generate(IEnumerable<Customer> customersWithLoans)
         {
-            Randomizer.Seed = new Random(222222);
+            var service = new CreditScoreService();
+            var scores = new List<CreditScore>();
 
-            var creditScores = new List<CreditScore>();
-
-            var faker = new Faker<CreditScore>()
-                .StrictMode(true)
-                .RuleFor(x => x.Id, _ => Guid.NewGuid())
-                .RuleFor(x => x.Score, f => f.Random.Int(300, 1000))
-                .RuleFor(x => x.LastCalculatedDate, f => f.Date.Recent())
-                .RuleFor(x => x.PaymentHistoryScore, f => f.Random.Decimal(200, 1000))
-                .RuleFor(x => x.CreditUtilizationScore, f => f.Random.Decimal(200, 1000))
-                .RuleFor(x => x.CreditAgeScore, f => f.Random.Decimal(100, 900))
-                .RuleFor(x => x.DefaultHistoryScore, f => f.Random.Decimal(0, 1000))
-                .RuleFor(x => x.CreditRating, f => f.PickRandom<CreditRating>())
-                .RuleFor(x => x.Customer, _ => null)
-                .RuleFor(x => x.CreatedOn, _ => DateTime.UtcNow)
-                .RuleFor(x => x.CreatedById, _ => (Guid?)null)
-                .RuleFor(x => x.CreatedBy, _ => null)
-                .RuleFor(x => x.UpdatedOn, _ => (DateTime?)null)
-                .RuleFor(x => x.UpdatedById, _ => (Guid?)null)
-                .RuleFor(x => x.UpdatedBy, _ => null)
-                .RuleFor(x => x.IsActive, _ => true)
-                .RuleFor(x => x.IsDeleted, _ => false)
-                .RuleFor(x => x.DeletedOn, _ => (DateTime?)null)
-                .RuleFor(x => x.DeletedById, _ => (Guid?)null)
-                .RuleFor(x => x.DeletedBy, _ => null);
-
-            foreach (var customer in customers)
+            foreach (Customer customer in customersWithLoans)
             {
-                var score = faker.Clone().RuleFor(x => x.CustomerId, _ => customer.Id).Generate();
-                creditScores.Add(score);
+                if (customer.Loans.Count == 0) continue;
+
+                CreditScore score = service.CalculateCreditScore(customer);
+                score.Id = Guid.NewGuid();
+                score.CustomerId = customer.Id;
+                score.Customer = null!;
+                score.CreatedOn = DateTime.UtcNow;
+                score.IsActive = true;
+                score.IsDeleted = false;
+
+                scores.Add(score);
             }
 
-            return creditScores;
+            return scores;
         }
     }
 }

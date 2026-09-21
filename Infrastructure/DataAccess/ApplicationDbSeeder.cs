@@ -20,6 +20,8 @@ namespace Infrastructure.DataAccess
             _connection = connection;
         }
 
+        private LoanPortfolio? _portfolio;
+
         public async Task SeedDatabaseAsync(LoanDbContext dbContext, CancellationToken cancellationToken)
         {
             try
@@ -28,6 +30,7 @@ namespace Infrastructure.DataAccess
                 await SeedCountriesAsync(dbContext, cancellationToken);
                 await SeedCurrenciesAsync(dbContext, cancellationToken);
                 await SeedRolesAsync(dbContext, cancellationToken);
+                await SeedStorageSettingsAsync(dbContext, cancellationToken);
                 await SeedBranchesAsync(dbContext, cancellationToken);
                 await SeedIdentificationTypesAsync(dbContext, cancellationToken);
                 await SeedDelinquencyPoliciesAsync(dbContext, cancellationToken);
@@ -37,7 +40,6 @@ namespace Infrastructure.DataAccess
                 await SeedCustomersAsync(cancellationToken);
                 await SeedLoansAsync(cancellationToken);
                 await SeedCreditScoresAsync(cancellationToken);
-                await SeedLoanPaymentsAsync(cancellationToken);
                 await SeedLoanDocumentsAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -49,9 +51,6 @@ namespace Infrastructure.DataAccess
 
         private async Task SeedRolesAsync(LoanDbContext dbContext, CancellationToken cancellationToken)
         {
-            if (await dbContext.Roles.AnyAsync(cancellationToken))
-                return;
-
             try
             {
                 var roles = new List<Role>
@@ -60,19 +59,32 @@ namespace Infrastructure.DataAccess
                     {
                         Id = SystemConstants.DefaultRoleId,
                         Code = "ADMIN",
-                        Name = "Administrator",
-                        Description = "System Administrator with full access",
+                        Name = "Administrador",
+                        Description = "Administrador del sistema con acceso completo",
                     },
                     new Role
                     {
                         Id = Guid.NewGuid(),
                         Code = "USER",
-                        Name = "Standard User",
-                        Description = "Standard user with limited access",
+                        Name = "Usuario estándar",
+                        Description = "Usuario con acceso limitado",
+                    },
+                    new Role
+                    {
+                        Id = Guid.NewGuid(),
+                        Code = "MANAGER",
+                        Name = "Gerente",
+                        Description = "Gerente: administra la configuración del sistema, como el almacenamiento de documentos",
                     }
                 };
 
-                await dbContext.Roles.AddRangeAsync(roles);
+                // Roles are added by code, so a role introduced later reaches databases that were seeded before it.
+                List<string> existing = await dbContext.Roles.Select(r => r.Code).ToListAsync(cancellationToken);
+                var missing = roles.Where(r => !existing.Contains(r.Code)).ToList();
+                if (missing.Count == 0)
+                    return;
+
+                await dbContext.Roles.AddRangeAsync(missing);
                 await dbContext.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -80,6 +92,16 @@ namespace Infrastructure.DataAccess
 
                 throw ex;
             }
+        }
+
+        private async Task SeedStorageSettingsAsync(LoanDbContext dbContext, CancellationToken cancellationToken)
+        {
+            if (await dbContext.StorageSettings.AnyAsync(cancellationToken))
+                return;
+
+            // Azure starts switched off, so new documents go to local storage until an admin or manager enables it.
+            await dbContext.StorageSettings.AddAsync(new StorageSetting { Id = Guid.NewGuid(), AzureEnabled = false }, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         private async Task SeedBranchesAsync(LoanDbContext dbContext, CancellationToken cancellationToken)
@@ -93,15 +115,15 @@ namespace Infrastructure.DataAccess
                 {
                     Id = SystemConstants.DefaultBranchId,
                     Code = "01",
-                    Name = "Main Branch",
-                    Address = "123 Main St, Cityville",
+                    Name = "Sucursal Principal",
+                    Address = "Av. 27 de Febrero #100, Santo Domingo",
                 },
                 new Branch
                 {
                     Id = Guid.NewGuid(),
                     Code = "02",
-                    Name = "Secondary Branch",
-                    Address = "456 Side St, Townsville",
+                    Name = "Sucursal Santiago",
+                    Address = "Av. Juan Pablo Duarte #45, Santiago",
                 }
             };
 
@@ -111,8 +133,6 @@ namespace Infrastructure.DataAccess
 
         private async Task SeedIdentificationTypesAsync(LoanDbContext dbContext, CancellationToken cancellationToken)
         {
-            if (await dbContext.IdentificationTypes.AnyAsync(cancellationToken))
-                return;
 
             var identificationTypes = new List<IdentificationType>
             {
@@ -121,18 +141,34 @@ namespace Infrastructure.DataAccess
                     Id = SystemConstants.CedulaIdentificationTypeId,
                     Code = "CEDULA",
                     Name = "Cédula de Identidad",
-                    Description = "Dominican National ID"
+                    Description = "Documento de identidad nacional dominicano",
+                    Mask = "999-9999999-9"
                 },
                 new IdentificationType
                 {
                     Id = SystemConstants.PassportIdentificationTypeId,
                     Code = "PASSPORT",
                     Name = "Pasaporte",
-                    Description = "International Passport"
+                    Description = "Pasaporte internacional (extranjeros)",
+                    Mask = "AA999999999999"
+                },
+                new IdentificationType
+                {
+                    Id = SystemConstants.RncIdentificationTypeId,
+                    Code = "RNC",
+                    Name = "RNC",
+                    Description = "Registro Nacional del Contribuyente (personas jurídicas)",
+                    Mask = "999-99999-9"
                 }
             };
 
-            await dbContext.IdentificationTypes.AddRangeAsync(identificationTypes);
+            // Add only the types that are missing, so databases created before a type existed pick it up on the next start.
+            var existingIds = await dbContext.IdentificationTypes.Select(t => t.Id).ToListAsync(cancellationToken);
+            var missing = identificationTypes.Where(t => !existingIds.Contains(t.Id)).ToList();
+            if (missing.Count == 0)
+                return;
+
+            await dbContext.IdentificationTypes.AddRangeAsync(missing);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
 
@@ -155,13 +191,14 @@ namespace Infrastructure.DataAccess
             var employee = new Employee
             {
                 Id = SystemConstants.DefaultAdminId,
-                FirstName = "Admin",
-                LastName = "User",
+                FirstName = "Administrador",
+                LastName = "del Sistema",
                 Email = "admin@admin.com",
                 UserName = "admin",
                 RoleId = SystemConstants.DefaultRoleId,
                 BranchId = SystemConstants.DefaultBranchId,
                 CreatedOn = DateTime.UtcNow,
+                MustChangePassword = true,
             };
 
             employee.PasswordHash = hasher.HashPassword(employee, SystemConstants.DefaultAdminPassword);
@@ -232,7 +269,7 @@ namespace Infrastructure.DataAccess
                 dt.Columns.Add("IsActive", typeof(bool));
                 dt.Columns.Add("IsDeleted", typeof(bool));
 
-                var customers = FakeDbQueryCustomers.Customers;
+                IReadOnlyList<Customer> customers = FakeDbQueryCustomers.Generate();
 
                 foreach (var customer in customers)
                 {
@@ -262,7 +299,7 @@ namespace Infrastructure.DataAccess
                         customer.EmergencyContactName ?? (object)DBNull.Value,
                         customer.EmergencyContactPhone ?? (object)DBNull.Value,
                         customer.TaxId ?? (object)DBNull.Value,
-                        DateTime.UtcNow,
+                        customer.CreatedOn,
                         (object)DBNull.Value,
                         (object)DBNull.Value,
                         (object)DBNull.Value,
@@ -288,22 +325,20 @@ namespace Infrastructure.DataAccess
             if (await sqlConn.QueryFirstOrDefaultAsync<int>("SELECT COUNT(*) FROM [Loans].[Loan]") > 0)
                 return;
 
-            // Query actual customer and branch IDs from database
-            var customerIds = (await sqlConn.QueryAsync<Guid>(
-                "SELECT Id FROM [Customers].[Customer]"
-            )).ToList();
+            // Only customers who are allowed to borrow get loans, sized from their own income and credit limit.
+            var profiles = (await sqlConn.QueryAsync<(Guid Id, decimal AnnualIncome, decimal CreditLimit)>(
+                "SELECT Id, ISNULL(AnnualIncome, 0), CreditLimit FROM [Customers].[Customer] WHERE Status = 1 AND IsBlacklisted = 0 AND IsDeleted = 0"
+            )).Select(c => new CustomerProfile(c.Id, c.AnnualIncome, c.CreditLimit)).ToList();
 
             var branchIds = (await sqlConn.QueryAsync<Guid>(
                 "SELECT Id FROM [Admin].[Branch]"
             )).ToList();
 
-            if (customerIds.Count == 0 || branchIds.Count == 0)
+            if (profiles.Count == 0 || branchIds.Count == 0)
                 throw new InvalidOperationException("Seed customers and branches first.");
 
-            var loans = FakeDbQueryLoans.GenerateLoans(
-                customerIds.Select(id => new Customer { Id = id }).AsEnumerable(),
-                branchIds.Select(id => new Branch { Id = id }).AsEnumerable()
-            );
+            var portfolio = FakeDbQueryLoanPortfolio.Generate(profiles, branchIds, DateOnly.FromDateTime(DateTime.UtcNow));
+            var loans = portfolio.Loans;
 
             var dt = new DataTable();
             dt.Columns.Add("Id", typeof(Guid));
@@ -368,7 +403,7 @@ namespace Infrastructure.DataAccess
                     loan.MaxCredit,
                     loan.RequiresGuarantor,
                     loan.GuarantorId ?? (object)DBNull.Value,
-                    DateTime.UtcNow,
+                    loan.CreatedOn,
                     (object)DBNull.Value,
                     (object)DBNull.Value,
                     (object)DBNull.Value,
@@ -378,6 +413,38 @@ namespace Infrastructure.DataAccess
             }
 
             await BulkInsertAsync(sqlConn, "[Loans].[Loan]", dt, cancellationToken);
+            await BulkInsertPaymentsAsync(sqlConn, portfolio.Payments, cancellationToken);
+            await DeriveCustomerFieldsFromLoansAsync(sqlConn);
+
+            _portfolio = portfolio;
+        }
+
+        /// <summary>
+        /// A customer's risk level and how long they have been a customer follow from their loan history,
+        /// so they are computed from the seeded loans instead of being random.
+        /// </summary>
+        private static async Task DeriveCustomerFieldsFromLoansAsync(SqlConnection sqlConn)
+        {
+            await sqlConn.ExecuteAsync(@"
+                UPDATE c
+                SET RiskLevel = CASE
+                    WHEN c.IsBlacklisted = 1 THEN 3
+                    WHEN EXISTS (SELECT 1 FROM [Loans].[Loan] l WHERE l.CustomerId = c.Id AND (l.LoanStatus = 7 OR l.DaysOverdue > 30)) THEN 3
+                    WHEN EXISTS (SELECT 1 FROM [Loans].[Loan] l WHERE l.CustomerId = c.Id AND l.DaysOverdue > 0) THEN 2
+                    WHEN (SELECT COUNT(*) FROM [Loans].[Loan] l INNER JOIN [Loans].[LoanPayment] p ON p.LoanId = l.Id WHERE l.CustomerId = c.Id AND p.Status = 1 AND p.PenaltyAmount > 0) >= 3 THEN 2
+                    WHEN EXISTS (SELECT 1 FROM [Loans].[Loan] l WHERE l.CustomerId = c.Id) THEN 1
+                    ELSE NULL END
+                FROM [Customers].[Customer] c;
+
+                UPDATE c
+                SET CreatedOn = DATEADD(DAY, -15, CAST(first.FirstDisbursement AS datetime2))
+                FROM [Customers].[Customer] c
+                INNER JOIN (
+                    SELECT CustomerId, MIN(DisbursementDate) AS FirstDisbursement
+                    FROM [Loans].[Loan]
+                    GROUP BY CustomerId
+                ) first ON first.CustomerId = c.Id
+                WHERE first.FirstDisbursement < CAST(c.CreatedOn AS date);");
         }
 
         private async Task SeedCreditScoresAsync(CancellationToken cancellationToken)
@@ -388,10 +455,31 @@ namespace Infrastructure.DataAccess
             if (await sqlConn.QueryFirstOrDefaultAsync<int>("SELECT COUNT(*) FROM [Customers].[CreditScore]") > 0)
                 return;
 
-            var customers = (await sqlConn.QueryAsync<Guid>("SELECT Id FROM [Customers].[Customer]")).ToList();
-            var customerEntities = customers.Select(id => new Customer { Id = id }).ToList();
+            // A score is derived from loan history, so it can only be seeded together with the loans.
+            if (_portfolio is null)
+                return;
 
-            var creditScores = FakeDbQueryCreditScores.GenerateCreditScores(customerEntities);
+            var customers = (await sqlConn.QueryAsync<(Guid Id, decimal CreditLimit, bool IsBlacklisted)>(
+                "SELECT Id, CreditLimit, IsBlacklisted FROM [Customers].[Customer]"
+            )).Select(c => new Customer { Id = c.Id, CreditLimit = c.CreditLimit, IsBlacklisted = c.IsBlacklisted }).ToList();
+
+            var paymentsByLoan = _portfolio.Payments.GroupBy(p => p.LoanId).ToDictionary(g => g.Key, g => g.ToList());
+            var loansByCustomer = _portfolio.Loans.GroupBy(l => l.CustomerId).ToDictionary(g => g.Key, g => g.ToList());
+
+            foreach (var customer in customers)
+            {
+                if (!loansByCustomer.TryGetValue(customer.Id, out var customerLoans))
+                    continue;
+
+                foreach (var loan in customerLoans)
+                {
+                    loan.Payments = paymentsByLoan.TryGetValue(loan.Id, out var loanPayments) ? loanPayments : new List<LoanPayment>();
+                }
+
+                customer.Loans = customerLoans;
+            }
+
+            var creditScores = FakeDbQueryCreditScores.Generate(customers);
 
             var dt = new DataTable();
             dt.Columns.Add("Id", typeof(Guid));
@@ -434,19 +522,8 @@ namespace Infrastructure.DataAccess
             await BulkInsertAsync(sqlConn, "[Customers].[CreditScore]", dt, cancellationToken);
         }
 
-        private async Task SeedLoanPaymentsAsync(CancellationToken cancellationToken)
+        private async Task BulkInsertPaymentsAsync(SqlConnection sqlConn, IEnumerable<LoanPayment> payments, CancellationToken cancellationToken)
         {
-            var sqlConn = _connection as SqlConnection
-                ?? throw new InvalidOperationException("IDbConnection must be SqlConnection for SqlBulkCopy.");
-
-            if (await sqlConn.QueryFirstOrDefaultAsync<int>("SELECT COUNT(*) FROM [Loans].[LoanPayment]") > 0)
-                return;
-
-            var loans = (await sqlConn.QueryAsync<(Guid Id, Guid CurrencyId)>("SELECT Id, CurrencyId FROM [Loans].[Loan]")).ToList();
-            var loanEntities = loans.Select(l => new Loan { Id = l.Id, CurrencyId = l.CurrencyId }).ToList();
-
-            var payments = FakeDbQueryLoanPayments.GenerateLoanPayments(loanEntities);
-
             var dt = new DataTable();
             dt.Columns.Add("Id", typeof(Guid));
             dt.Columns.Add("LoanId", typeof(Guid));
@@ -480,7 +557,7 @@ namespace Infrastructure.DataAccess
                     (int)payment.PaymentMethod,
                     payment.ReferenceNumber ?? (object)DBNull.Value,
                     (int)payment.Status,
-                    DateTime.UtcNow,
+                    payment.CreatedOn,
                     (object)DBNull.Value,
                     (object)DBNull.Value,
                     (object)DBNull.Value,

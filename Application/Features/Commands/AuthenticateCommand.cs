@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Commands
 {
-    public record TokenResponse(string Token);
+    public record TokenResponse(string Token, bool MustChangePassword = false);
     
     public class AuthenticateCommand : IRequest<TokenResponse>
     {

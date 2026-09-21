@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 using LoanApi.Controllers.Modules.Loans.Requests;
 using LoanApi.Common.Pagination;
@@ -7,11 +8,12 @@ using LoanApi.Common.Extensions;
 using Application.Features.Documents.Queries;
 using Application.Features.Documents.Commands;
 using Domain.Enums;
+using Application.Features.Documents;
 
 namespace LoanApi.Controllers.Modules.Loans
 {
     [Authorize]
-    [Route("documents")]
+    [Route("api/v{version:apiVersion}/documents")]
     public class DocumentsController : LoanModuleController
     {
         /// <summary>
@@ -45,7 +47,7 @@ namespace LoanApi.Controllers.Modules.Loans
             var command = new CreateDocumentCommand
             {
                 LoanId = loanId,
-                DocumentType = Enum.Parse<DocumentTypes>(request.DocumentType ?? "Contract", ignoreCase: true),
+                DocumentType = ParseDocumentType(request.DocumentType),
                 FileName = request.FileName ?? string.Empty,
                 FileUrl = request.FileUrl ?? string.Empty
             };
@@ -54,14 +56,64 @@ namespace LoanApi.Controllers.Modules.Loans
         }
 
         /// <summary>
+        /// Upload a file for a loan. It is kept in Azure when that is enabled, otherwise in local storage.
+        /// </summary>
+        [HttpPost("Upload/{loanId:guid}")]
+        [RequestSizeLimit(DocumentRules.MaxFileBytes + 1024 * 1024)]
+        public async Task<IActionResult> Upload(Guid loanId, [FromForm] UploadDocumentForm form)
+        {
+            if (form.File is null)
+                throw new Application.Exceptions.ValidationException(
+                    "The document is not valid.", new List<string> { "A file is required." });
+
+            if (!DocumentRules.TryParseDocumentType(form.DocumentType, out var documentType))
+                throw new Application.Exceptions.ValidationException(
+                    "The document is not valid.", new List<string> { "The document type is not recognized." });
+
+            await using var content = form.File.OpenReadStream();
+            var command = new UploadDocumentCommand
+            {
+                LoanId = loanId,
+                DocumentType = documentType,
+                // Browsers send just the name, but some clients send a full path.
+                FileName = Path.GetFileName(form.File.FileName),
+                Length = form.File.Length,
+                Content = content
+            };
+
+            var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Download the file behind a document. Only signed-in users can, and it is always sent as an attachment.
+        /// </summary>
+        [HttpGet("Download/{id:guid}")]
+        public async Task<IActionResult> Download(Guid id)
+        {
+            var file = await Mediator.Send(new GetDocumentFileQuery(id));
+            Response.Headers["X-Content-Type-Options"] = "nosniff";
+            return File(file.Content, file.ContentType, file.FileName);
+        }
+
+        /// <summary>
         /// Delete document
         /// </summary>
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = SystemRoles.Admin)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeleteDocumentCommand(id);
             await Mediator.Send(command);
             return NoContent();
+        }
+
+        private static DocumentTypes ParseDocumentType(string? value)
+        {
+            if (!Application.Features.Documents.DocumentRules.TryParseDocumentType(value, out var type))
+                throw new Application.Exceptions.ValidationException(
+                    "The document is not valid.", new List<string> { "The document type is not recognized." });
+            return type;
         }
     }
 }

@@ -7,6 +7,7 @@
         public static readonly Guid DefaultBranchId = new Guid("250EA33C-B13C-4894-9CF1-30AEBA8E613B");
         public static readonly Guid CedulaIdentificationTypeId = new Guid("A1B2C3D4-E5F6-4AB8-C9D0-E1F2A3B4C5D6");
         public static readonly Guid PassportIdentificationTypeId = new Guid("E1F2A3B4-C5D6-47E8-F9A0-B1C2D3E4F5A6");
+        public static readonly Guid RncIdentificationTypeId = new Guid("B2C3D4E5-F6A7-4BC9-D0E1-F2A3B4C5D6E7");
         public static string DefaultAdminPassword = "4dm1n@";
     }
 }

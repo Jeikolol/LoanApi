@@ -1,15 +1,16 @@
 using Application.Features.Dashboard.Queries;
 using Application.Models.Responses.Dashboard;
 using Dapper;
+using Domain.Enums;
 using MediatR;
 using System.Data;
 
 namespace Application.Features.Dashboard.Handlers
 {
-    internal record DelinquencyTrendQueryResult(string Label, decimal CurrentDaysOverdueAvg, decimal PreviousDaysOverdueAvg);
-
     public class GetDelinquencyTrendQueryHandler : IRequestHandler<GetDelinquencyTrendQuery, DelinquencyTrendResponse>
     {
+        public const int Days = 30;
+
         private readonly IDbConnection _connection;
 
         public GetDelinquencyTrendQueryHandler(IDbConnection connection)
@@ -19,33 +20,46 @@ namespace Application.Features.Dashboard.Handlers
 
         public async Task<DelinquencyTrendResponse> Handle(GetDelinquencyTrendQuery request, CancellationToken cancellationToken)
         {
-            const string sql = @"
-               WITH DateRange AS (
-                  SELECT CAST(DATEADD(DAY, -ROW_NUMBER() OVER (ORDER BY (SELECT NULL)), CAST(GETDATE() AS DATE)) AS DATE) AS [Date]
-                  FROM (SELECT TOP 30 1 AS rn FROM sys.objects) a
-                ),
-                DailyAverage AS (
-                  SELECT
-                    d.[Date],
-                    AVG(CAST(l.DaysOverdue AS DECIMAL)) AS DayAvg
-                  FROM DateRange d
-                  LEFT JOIN [Loans].[Loan] l ON CAST(l.UpdatedOn AS DATE) <= d.[Date] AND l.IsDeleted = 0
-                  GROUP BY d.[Date]
-                )
-                SELECT
-                  FORMAT([Date], 'dd/MM') AS Label,
-                  ISNULL(CAST(AVG(DayAvg) OVER (ORDER BY [Date] ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS DECIMAL(5,2)), 0.0) AS CurrentDaysOverdueAvg,
-                  ISNULL(CAST(AVG(DayAvg) OVER (ORDER BY [Date] ROWS BETWEEN 30 PRECEDING AND 1 PRECEDING) AS DECIMAL(5,2)), 0.0) AS PreviousDaysOverdueAvg
-                FROM DailyAverage
-                ORDER BY [Date] DESC";
+            // Loans that were ever disbursed (a pending, approved or cancelled loan has no schedule to be late on).
+            List<HistoryLoan> loans = [.. (await _connection.QueryAsync<LoanRow>(
+                @"SELECT Id, DisbursementDate, MaturityDate, TermMonths, InstallmentAmount
+                  FROM [Loans].[Loan]
+                  WHERE IsDeleted = 0 AND LoanStatus NOT IN @Excluded",
+                new { Excluded = new[] { (int)LoanStatus.Pending, (int)LoanStatus.Approved } }))
+                .Select(l => new HistoryLoan(l.Id, l.DisbursementDate, l.MaturityDate, l.TermMonths, l.InstallmentAmount))];
 
-            var trends = (await _connection.QueryAsync<DelinquencyTrendQueryResult>(sql)).ToList();
+            List<HistoryPayment> payments = [.. (await _connection.QueryAsync<PaymentRow>(
+                @"SELECT LoanId, PaymentDate, PrincipalAmount + InterestAmount AS Amount, ReversedOn, Status
+                  FROM [Loans].[LoanPayment]
+                  WHERE IsDeleted = 0 AND Status IN @Statuses",
+                new { Statuses = new[] { (int)PaymentStatus.Completed, (int)PaymentStatus.Reversed } }))
+                .Select(p => new HistoryPayment(
+                    p.LoanId,
+                    DateOnly.FromDateTime(p.PaymentDate),
+                    p.Amount,
+                    p.Status == PaymentStatus.Reversed ? DateOnly.FromDateTime(p.ReversedOn ?? p.PaymentDate) : null))];
 
-            var labels = trends.Select(t => t.Label).ToArray();
-            var currentMonth = trends.Select(t => t.CurrentDaysOverdueAvg).ToArray();
-            var previousMonth = trends.Select(t => t.PreviousDaysOverdueAvg).ToArray();
+            var (labels, current, previous) = DelinquencyHistory.Trend(DateOnly.FromDateTime(DateTime.UtcNow), Days, loans, payments);
 
-            return new DelinquencyTrendResponse(labels, currentMonth, previousMonth);
+            return new DelinquencyTrendResponse(labels, current, previous);
+        }
+
+        private sealed class LoanRow
+        {
+            public Guid Id { get; set; }
+            public DateOnly DisbursementDate { get; set; }
+            public DateOnly MaturityDate { get; set; }
+            public int TermMonths { get; set; }
+            public decimal InstallmentAmount { get; set; }
+        }
+
+        private sealed class PaymentRow
+        {
+            public Guid LoanId { get; set; }
+            public DateTime PaymentDate { get; set; }
+            public decimal Amount { get; set; }
+            public DateTime? ReversedOn { get; set; }
+            public PaymentStatus Status { get; set; }
         }
     }
 }

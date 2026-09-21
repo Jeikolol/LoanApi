@@ -50,7 +50,8 @@ namespace Application.Services
             if (customer.Loans == null || customer.Loans.Count == 0)
                 return 500m; // Neutral score for new customers
 
-            var totalPayments = customer.Loans.Sum(l => l.Payments.Count);
+            // A reversed payment was undone (a mistake, a bounced cheque): it is neither on time nor missed.
+            var totalPayments = customer.Loans.Sum(l => l.Payments.Count(p => p.Status != Domain.Enums.PaymentStatus.Reversed));
             if (totalPayments == 0)
                 return 300m;
 
@@ -59,7 +60,12 @@ namespace Application.Services
             );
 
             var onTimePercentage = totalPayments > 0 ? (decimal)onTimePayments / totalPayments : 0;
-            return (int)(onTimePercentage * 1000);
+
+            // A loan that is overdue right now weighs on the payment history, fading to nothing at the write-off horizon (90 days).
+            var worstDaysOverdue = customer.Loans.Max(l => l.DaysOverdue);
+            var overdueFactor = 1m - Math.Min(1m, worstDaysOverdue / 90m);
+
+            return (int)(onTimePercentage * 1000 * overdueFactor);
         }
 
         private decimal CalculateCreditUtilizationScore(Customer customer)

@@ -1,7 +1,8 @@
-﻿using Application.Exceptions;
+using Application.Exceptions;
 using Application.Features.Commands;
 using Application.Services;
 using Dapper;
+using Domain.Constants;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +35,7 @@ namespace Application.Features.Handlers
 
         public async Task<TokenResponse> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
         {
-            string query = "SELECT * FROM Admin.Employee WHERE Username = @UserName";
+            string query = "SELECT * FROM Admin.Employee WHERE Username = @UserName AND IsActive = 1 AND IsDeleted = 0";
 
             var args = new
             {
@@ -45,7 +46,7 @@ namespace Application.Features.Handlers
             var employee = await _connection.QueryFirstOrDefaultAsync<Employee>(query, args);
 
             if (employee == null)
-                throw new NotFoundException("Invalid username or password.");
+                throw new UnauthorizedException("Invalid username or password.");
 
             var hasher = new PasswordHasher<Employee>();
 
@@ -54,9 +55,20 @@ namespace Application.Features.Handlers
             if (passRes == PasswordVerificationResult.Failed)
                 throw new UnauthorizedException("Invalid username or password.");
 
-            var token = _jwt.GenerateToken(employee.Id, employee.UserName);
+            var roleCode = await _connection.QueryFirstOrDefaultAsync<string>(
+                "SELECT Code FROM Admin.Role WHERE Id = @RoleId AND IsDeleted = 0", new { employee.RoleId });
 
-            return new TokenResponse(token);
+            bool enforcePasswordChange = !string.Equals(
+                _configuration["Security:EnforcePasswordChange"], "false", StringComparison.OrdinalIgnoreCase);
+            bool mustChangePassword = employee.MustChangePassword && enforcePasswordChange;
+
+            await _connection.ExecuteAsync(
+                "UPDATE Admin.Employee SET LastLoginOn = @Now WHERE Id = @Id", new { Now = DateTime.UtcNow, employee.Id });
+
+            var token = _jwt.GenerateToken(employee.Id, employee.UserName, roleCode ?? SystemRoles.User, mustChangePassword,
+                employee.FirstName, employee.LastName, employee.Email);
+
+            return new TokenResponse(token, mustChangePassword);
         }
     }
 }

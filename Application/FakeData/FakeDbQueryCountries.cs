@@ -18,15 +18,19 @@ namespace Application.FakeData
                     Code = "DO",
                     CodeIso2 = "DO",
                     Name = "República Dominicana",
-                    Nationality = "Dominicana/o"
+                    Nationality = "Dominicana/o",
+                    PhoneCode = "1",
+                    PhoneMask = "999-999-9999"
                 },
                 new Country
                 {
                     Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                     Code = "US",
                     CodeIso2 = "US",
-                    Name = "United States",
-                    Nationality = "American"
+                    Name = "Estados Unidos",
+                    Nationality = "Estadounidense",
+                    PhoneCode = "1",
+                    PhoneMask = "999-999-9999"
                 },
                 new Country
                 {
@@ -34,7 +38,9 @@ namespace Application.FakeData
                     Code = "ES",
                     CodeIso2 = "ES",
                     Name = "España",
-                    Nationality = "Española/o"
+                    Nationality = "Español/a",
+                    PhoneCode = "34",
+                    PhoneMask = "999 999 999"
                 },
                 new Country
                 {
@@ -42,7 +48,9 @@ namespace Application.FakeData
                     Code = "MX",
                     CodeIso2 = "MX",
                     Name = "México",
-                    Nationality = "Mexicana/o"
+                    Nationality = "Mexicana/o",
+                    PhoneCode = "52",
+                    PhoneMask = "99 9999 9999"
                 },
                 new Country
                 {
@@ -50,7 +58,9 @@ namespace Application.FakeData
                     Code = "CO",
                     CodeIso2 = "CO",
                     Name = "Colombia",
-                    Nationality = "Colombiana/o"
+                    Nationality = "Colombiana/o",
+                    PhoneCode = "57",
+                    PhoneMask = "999 999 9999"
                 },
                 new Country
                 {
@@ -58,7 +68,9 @@ namespace Application.FakeData
                     Code = "PR",
                     CodeIso2 = "PR",
                     Name = "Puerto Rico",
-                    Nationality = "Puertorriqueña/o"
+                    Nationality = "Puertorriqueña/o",
+                    PhoneCode = "1",
+                    PhoneMask = "999-999-9999"
                 }
             };
 

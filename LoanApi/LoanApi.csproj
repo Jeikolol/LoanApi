@@ -29,6 +29,11 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Migrations\Migrations.csproj" />
     <ProjectReference Include="..\Persistance\Persistence.csproj" />
+    <ProjectReference Include="..\LoanApi.Storage\LoanApi.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Localization\**\*.po" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

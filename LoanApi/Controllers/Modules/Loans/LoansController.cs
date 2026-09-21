@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
 using LoanApi.Controllers.Modules.Loans.Requests;
 using LoanApi.Common.Pagination;
@@ -30,6 +31,12 @@ namespace LoanApi.Controllers.Modules.Loans
                 InterestRate = request.InterestRate,
                 TermMonths = request.TermMonths
             };
+
+            if (Guid.TryParse(User.FindFirst("sub")?.Value, out Guid userId))
+            {
+                command.CreatedById = userId;
+            }
+
             var result = await Mediator.Send(command);
             return Ok(result);
         }
@@ -71,6 +78,7 @@ namespace LoanApi.Controllers.Modules.Loans
         /// Update loan
         /// </summary>
         [HttpPut("{id}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateLoanRequest request)
         {
             var command = new UpdateLoanCommand
@@ -84,6 +92,40 @@ namespace LoanApi.Controllers.Modules.Loans
         }
 
         /// <summary>
+        /// Approve a pending loan (checks the customer's eligibility and credit limit)
+        /// </summary>
+        [HttpPost("Approve/{id:guid}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
+        public Task<IActionResult> Approve(Guid id) => Transition(id, LoanAction.Approve);
+
+        /// <summary>
+        /// Disburse an approved loan: starts its schedule today
+        /// </summary>
+        [HttpPost("Disburse/{id:guid}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
+        public Task<IActionResult> Disburse(Guid id) => Transition(id, LoanAction.Disburse);
+
+        /// <summary>
+        /// Cancel a loan that has not been disbursed
+        /// </summary>
+        [HttpPost("Cancel/{id:guid}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
+        public Task<IActionResult> Cancel(Guid id) => Transition(id, LoanAction.Cancel);
+
+        /// <summary>
+        /// Close a fully paid loan
+        /// </summary>
+        [HttpPost("Close/{id:guid}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
+        public Task<IActionResult> Close(Guid id) => Transition(id, LoanAction.Close);
+
+        private async Task<IActionResult> Transition(Guid id, LoanAction action)
+        {
+            var result = await Mediator.Send(new TransitionLoanCommand { LoanId = id, Action = action });
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get amortization schedule
         /// </summary>
         [HttpGet("GetAmortization/{id}")]
@@ -91,36 +133,6 @@ namespace LoanApi.Controllers.Modules.Loans
         {
             var query = new GetAmortizationScheduleQuery(id);
             var result = await Mediator.Send(query);
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Get payment history (paginated)
-        /// </summary>
-        [HttpGet("GetPayments/{id}")]
-        public async Task<IActionResult> GetPayments(Guid id, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
-        {
-            var query = new GetLoanPaymentsQuery(id, pageNumber, pageSize);
-            var result = await Mediator.Send(query);
-            return this.OkPaged(result.Data, new PageRequest(pageNumber, pageSize), result.TotalCount);
-        }
-
-        /// <summary>
-        /// Record payment
-        /// </summary>
-        [HttpPost("CreatePayment/{id}")]
-        public async Task<IActionResult> CreatePayment(Guid id, [FromBody] RecordPaymentRequest request)
-        {
-            var command = new CreatePaymentCommand
-            {
-                LoanId = id,
-                PrincipalAmount = request.PrincipalAmount,
-                InterestAmount = request.InterestAmount,
-                PenaltyAmount = request.PenaltyAmount,
-                PaymentMethod = Enum.Parse<PaymentMethod>(request.PaymentMethod, ignoreCase: true),
-                ReferenceNumber = request.ReferenceNumber
-            };
-            var result = await Mediator.Send(command);
             return Ok(result);
         }
 
@@ -144,7 +156,7 @@ namespace LoanApi.Controllers.Modules.Loans
             var command = new CreateDocumentCommand
             {
                 LoanId = id,
-                DocumentType = Enum.Parse<DocumentTypes>(request.DocumentType ?? "Contract", ignoreCase: true),
+                DocumentType = ParseDocumentType(request.DocumentType),
                 FileName = request.FileName ?? string.Empty,
                 FileUrl = request.FileUrl ?? string.Empty
             };
@@ -172,6 +184,14 @@ namespace LoanApi.Controllers.Modules.Loans
             var query = new GetDashboardSummaryQuery();
             var result = await Mediator.Send(query);
             return Ok(result);
+        }
+
+        private static DocumentTypes ParseDocumentType(string? value)
+        {
+            if (!Application.Features.Documents.DocumentRules.TryParseDocumentType(value, out var type))
+                throw new Application.Exceptions.ValidationException(
+                    "The document is not valid.", new List<string> { "The document type is not recognized." });
+            return type;
         }
     }
 }

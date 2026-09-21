@@ -24,16 +24,18 @@ namespace Application.Features.Dashboard.Handlers
         {
             _logger.LogInformation("Getting portfolio summary");
 
+            // "Portfolio" is what is still owed on loans being repaid (not what was ever lent, nor loans not yet disbursed).
             const string sql = @"
                 SELECT
-                    ISNULL(SUM(PrincipalAmount), 0.0) AS TotalPortfolio,
+                    ISNULL(SUM(PrincipalRemaining), 0.0) AS TotalPortfolio,
                     ISNULL(CAST(SUM(CASE WHEN DaysOverdue > 0 THEN PrincipalRemaining ELSE 0 END) * 100.0
                         / NULLIF(SUM(PrincipalRemaining), 0) AS DECIMAL(5,2)), 0.0) AS DelinquencyRate,
-                    COUNT(CASE WHEN LoanStatus = 3 THEN 1 END) AS ActiveCredits,
+                    COUNT(*) AS ActiveCredits,
                     (SELECT ISNULL(SUM(TotalPaymentAmount), 0) FROM [Loans].[LoanPayment]
-                    WHERE IsDeleted = 0 AND CAST(PaymentDate AS DATE) = CAST(GETDATE() AS DATE)) AS MonthlyCollections
+                     WHERE IsDeleted = 0 AND Status = 1
+                       AND PaymentDate >= DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1)) AS MonthlyCollections
                 FROM [Loans].[Loan]
-                WHERE IsDeleted = 0";
+                WHERE IsDeleted = 0 AND LoanStatus IN (2, 3, 4, 6, 8)";
 
             var result = await _connection.QuerySingleOrDefaultAsync<PortfolioSummaryQueryResult>(sql);
 

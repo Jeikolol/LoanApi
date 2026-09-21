@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities
+namespace Domain.Entities
 {
     public class Employee : AuditableEntity<Guid>
     {
@@ -17,6 +17,11 @@
         public Branch Branch { get; set; } = default!;
 
         public DateTime? LastLoginOn { get; set; }
+
+        public bool MustChangePassword { get; set; }
+
+        /// <summary>Tokens issued before this moment are no longer accepted (set on deactivation, role change and password reset).</summary>
+        public DateTime? TokensValidFrom { get; set; }
     }
 
 }

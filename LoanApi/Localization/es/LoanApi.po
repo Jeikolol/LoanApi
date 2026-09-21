@@ -1,0 +1,1088 @@
+# Traducciones del API de LoanWeb (es).
+# Cada msgid es el mensaje en inglés que produce el API; los valores variables (números, GUID) se
+# reemplazan por {0}, {1}, ... antes de buscar la traducción.
+msgid ""
+msgstr ""
+"Project-Id-Version: LoanApi\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "A customer with the same identification or phone already exists."
+msgstr "Ya existe un cliente con el mismo documento o teléfono."
+
+msgid "A customer with this identification already exists."
+msgstr "Ya existe un cliente con este número de documento."
+
+msgid "A customer with this phone number already exists."
+msgstr "Ya existe un cliente con este número de teléfono."
+
+msgid "A loan with status Active cannot receive payments."
+msgstr "Un préstamo en estado activo no puede recibir pagos."
+
+msgid "A loan with status Approved cannot receive payments."
+msgstr "Un préstamo en estado aprobado no puede recibir pagos."
+
+msgid "A loan with status Closed cannot receive payments."
+msgstr "Un préstamo en estado cerrado no puede recibir pagos."
+
+msgid "A loan with status Defaulted cannot receive payments."
+msgstr "Un préstamo en estado incumplido no puede recibir pagos."
+
+msgid "A loan with status Disbursed cannot receive payments."
+msgstr "Un préstamo en estado desembolsado no puede recibir pagos."
+
+msgid "A loan with status FullyPaid cannot receive payments."
+msgstr "Un préstamo en estado pagado en su totalidad no puede recibir pagos."
+
+msgid "A loan with status PartiallyPaid cannot receive payments."
+msgstr "Un préstamo en estado parcialmente pagado no puede recibir pagos."
+
+msgid "A loan with status Pending cannot receive payments."
+msgstr "Un préstamo en estado pendiente no puede recibir pagos."
+
+msgid "A loan with status Restructured cannot receive payments."
+msgstr "Un préstamo en estado reestructurado no puede recibir pagos."
+
+msgid "A loan with status WrittenOff cannot receive payments."
+msgstr "Un préstamo en estado castigado no puede recibir pagos."
+
+msgid "Address cannot be negative."
+msgstr "La dirección no puede ser negativa."
+
+msgid "Address cannot exceed {0} characters."
+msgstr "La dirección no puede exceder {0} caracteres."
+
+msgid "Address cannot have more than two decimals."
+msgstr "La dirección no puede tener más de dos decimales."
+
+msgid "Address is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La dirección no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Address is not valid."
+msgstr "La dirección no es válida."
+
+msgid "Address is required."
+msgstr "La dirección es obligatoria."
+
+msgid "Address must be greater than zero."
+msgstr "La dirección debe ser mayor que cero."
+
+msgid "AlternativePhone cannot be negative."
+msgstr "El teléfono alternativo no puede ser negativo."
+
+msgid "AlternativePhone cannot exceed {0} characters."
+msgstr "El teléfono alternativo no puede exceder {0} caracteres."
+
+msgid "AlternativePhone cannot have more than two decimals."
+msgstr "El teléfono alternativo no puede tener más de dos decimales."
+
+msgid "AlternativePhone is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El teléfono alternativo no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "AlternativePhone is not valid."
+msgstr "El teléfono alternativo no es válido."
+
+msgid "AlternativePhone is required."
+msgstr "El teléfono alternativo es obligatorio."
+
+msgid "AlternativePhone must be greater than zero."
+msgstr "El teléfono alternativo debe ser mayor que cero."
+
+msgid "An unexpected error occurred."
+msgstr "Ocurrió un error inesperado."
+
+msgid "AnnualIncome cannot be negative."
+msgstr "El ingreso anual no puede ser negativo."
+
+msgid "AnnualIncome cannot exceed {0} characters."
+msgstr "El ingreso anual no puede exceder {0} caracteres."
+
+msgid "AnnualIncome cannot have more than two decimals."
+msgstr "El ingreso anual no puede tener más de dos decimales."
+
+msgid "AnnualIncome is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El ingreso anual no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "AnnualIncome is not valid."
+msgstr "El ingreso anual no es válido."
+
+msgid "AnnualIncome is required."
+msgstr "El ingreso anual es obligatorio."
+
+msgid "AnnualIncome must be greater than zero."
+msgstr "El ingreso anual debe ser mayor que cero."
+
+msgid "BranchId cannot be negative."
+msgstr "La sucursal no puede ser negativa."
+
+msgid "BranchId cannot exceed {0} characters."
+msgstr "La sucursal no puede exceder {0} caracteres."
+
+msgid "BranchId cannot have more than two decimals."
+msgstr "La sucursal no puede tener más de dos decimales."
+
+msgid "BranchId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La sucursal no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "BranchId is not valid."
+msgstr "La sucursal no es válida."
+
+msgid "BranchId is required."
+msgstr "La sucursal es obligatoria."
+
+msgid "BranchId must be greater than zero."
+msgstr "La sucursal debe ser mayor que cero."
+
+msgid "CompanyName cannot be negative."
+msgstr "La razón social no puede ser negativa."
+
+msgid "CompanyName cannot exceed {0} characters."
+msgstr "La razón social no puede exceder {0} caracteres."
+
+msgid "CompanyName cannot have more than two decimals."
+msgstr "La razón social no puede tener más de dos decimales."
+
+msgid "CompanyName is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La razón social no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "CompanyName is not valid."
+msgstr "La razón social no es válida."
+
+msgid "CompanyName is required for a legal person."
+msgstr "La razón social es obligatoria para una persona jurídica."
+
+msgid "CompanyName is required."
+msgstr "La razón social es obligatoria."
+
+msgid "CompanyName must be greater than zero."
+msgstr "La razón social debe ser mayor que cero."
+
+msgid "CountryId cannot be negative."
+msgstr "El país no puede ser negativo."
+
+msgid "CountryId cannot exceed {0} characters."
+msgstr "El país no puede exceder {0} caracteres."
+
+msgid "CountryId cannot have more than two decimals."
+msgstr "El país no puede tener más de dos decimales."
+
+msgid "CountryId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El país no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "CountryId is not valid."
+msgstr "El país no es válido."
+
+msgid "CountryId is required."
+msgstr "El país es obligatorio."
+
+msgid "CountryId must be greater than zero."
+msgstr "El país debe ser mayor que cero."
+
+msgid "Credit score for customer {0} not found"
+msgstr "No se encontró el puntaje de crédito del cliente {0}"
+
+msgid "CreditLimit cannot be negative."
+msgstr "El límite de crédito no puede ser negativo."
+
+msgid "CreditLimit cannot exceed {0} characters."
+msgstr "El límite de crédito no puede exceder {0} caracteres."
+
+msgid "CreditLimit cannot have more than two decimals."
+msgstr "El límite de crédito no puede tener más de dos decimales."
+
+msgid "CreditLimit is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El límite de crédito no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "CreditLimit is not valid."
+msgstr "El límite de crédito no es válido."
+
+msgid "CreditLimit is required."
+msgstr "El límite de crédito es obligatorio."
+
+msgid "CreditLimit must be greater than zero."
+msgstr "El límite de crédito debe ser mayor que cero."
+
+msgid "Customer {0} not found"
+msgstr "Cliente {0} no encontrado"
+
+msgid "CustomerId cannot be negative."
+msgstr "El cliente no puede ser negativo."
+
+msgid "CustomerId cannot exceed {0} characters."
+msgstr "El cliente no puede exceder {0} caracteres."
+
+msgid "CustomerId cannot have more than two decimals."
+msgstr "El cliente no puede tener más de dos decimales."
+
+msgid "CustomerId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El cliente no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "CustomerId is not valid."
+msgstr "El cliente no es válido."
+
+msgid "CustomerId is required."
+msgstr "El cliente es obligatorio."
+
+msgid "CustomerId must be greater than zero."
+msgstr "El cliente debe ser mayor que cero."
+
+msgid "CustomerType cannot be negative."
+msgstr "El tipo de cliente no puede ser negativo."
+
+msgid "CustomerType cannot exceed {0} characters."
+msgstr "El tipo de cliente no puede exceder {0} caracteres."
+
+msgid "CustomerType cannot have more than two decimals."
+msgstr "El tipo de cliente no puede tener más de dos decimales."
+
+msgid "CustomerType is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El tipo de cliente no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "CustomerType is not valid."
+msgstr "El tipo de cliente no es válido."
+
+msgid "CustomerType is required."
+msgstr "El tipo de cliente es obligatorio."
+
+msgid "CustomerType must be greater than zero."
+msgstr "El tipo de cliente debe ser mayor que cero."
+
+msgid "Document {0} not found"
+msgstr "Documento {0} no encontrado"
+
+msgid "Email cannot be negative."
+msgstr "El email no puede ser negativo."
+
+msgid "Email cannot exceed {0} characters."
+msgstr "El email no puede exceder {0} caracteres."
+
+msgid "Email cannot have more than two decimals."
+msgstr "El email no puede tener más de dos decimales."
+
+msgid "Email is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El email no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Email is not valid."
+msgstr "El email no es válido."
+
+msgid "Email is required."
+msgstr "El email es obligatorio."
+
+msgid "Email must be greater than zero."
+msgstr "El email debe ser mayor que cero."
+
+msgid "EmergencyContactName cannot be negative."
+msgstr "El nombre del contacto de emergencia no puede ser negativo."
+
+msgid "EmergencyContactName cannot exceed {0} characters."
+msgstr "El nombre del contacto de emergencia no puede exceder {0} caracteres."
+
+msgid "EmergencyContactName cannot have more than two decimals."
+msgstr "El nombre del contacto de emergencia no puede tener más de dos decimales."
+
+msgid "EmergencyContactName is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El nombre del contacto de emergencia no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "EmergencyContactName is not valid."
+msgstr "El nombre del contacto de emergencia no es válido."
+
+msgid "EmergencyContactName is required."
+msgstr "El nombre del contacto de emergencia es obligatorio."
+
+msgid "EmergencyContactName must be greater than zero."
+msgstr "El nombre del contacto de emergencia debe ser mayor que cero."
+
+msgid "EmergencyContactPhone cannot be negative."
+msgstr "El teléfono de emergencia no puede ser negativo."
+
+msgid "EmergencyContactPhone cannot exceed {0} characters."
+msgstr "El teléfono de emergencia no puede exceder {0} caracteres."
+
+msgid "EmergencyContactPhone cannot have more than two decimals."
+msgstr "El teléfono de emergencia no puede tener más de dos decimales."
+
+msgid "EmergencyContactPhone is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El teléfono de emergencia no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "EmergencyContactPhone is not valid."
+msgstr "El teléfono de emergencia no es válido."
+
+msgid "EmergencyContactPhone is required."
+msgstr "El teléfono de emergencia es obligatorio."
+
+msgid "EmergencyContactPhone must be greater than zero."
+msgstr "El teléfono de emergencia debe ser mayor que cero."
+
+msgid "FirstName cannot be negative."
+msgstr "El nombre no puede ser negativo."
+
+msgid "FirstName cannot exceed {0} characters."
+msgstr "El nombre no puede exceder {0} caracteres."
+
+msgid "FirstName cannot have more than two decimals."
+msgstr "El nombre no puede tener más de dos decimales."
+
+msgid "FirstName is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El nombre no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "FirstName is not valid."
+msgstr "El nombre no es válido."
+
+msgid "FirstName is required."
+msgstr "El nombre es obligatorio."
+
+msgid "FirstName must be greater than zero."
+msgstr "El nombre debe ser mayor que cero."
+
+msgid "Identification cannot be negative."
+msgstr "El número de documento no puede ser negativo."
+
+msgid "Identification cannot exceed {0} characters."
+msgstr "El número de documento no puede exceder {0} caracteres."
+
+msgid "Identification cannot have more than two decimals."
+msgstr "El número de documento no puede tener más de dos decimales."
+
+msgid "Identification is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El número de documento no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Identification is not valid."
+msgstr "El número de documento no es válido."
+
+msgid "Identification is required."
+msgstr "El número de documento es obligatorio."
+
+msgid "Identification must be greater than zero."
+msgstr "El número de documento debe ser mayor que cero."
+
+msgid "IdentificationTypeId cannot be negative."
+msgstr "El tipo de documento no puede ser negativo."
+
+msgid "IdentificationTypeId cannot exceed {0} characters."
+msgstr "El tipo de documento no puede exceder {0} caracteres."
+
+msgid "IdentificationTypeId cannot have more than two decimals."
+msgstr "El tipo de documento no puede tener más de dos decimales."
+
+msgid "IdentificationTypeId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El tipo de documento no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "IdentificationTypeId is not valid."
+msgstr "El tipo de documento no es válido."
+
+msgid "IdentificationTypeId is required."
+msgstr "El tipo de documento es obligatorio."
+
+msgid "IdentificationTypeId must be greater than zero."
+msgstr "El tipo de documento debe ser mayor que cero."
+
+msgid "IncomeSource cannot be negative."
+msgstr "La fuente de ingreso no puede ser negativa."
+
+msgid "IncomeSource cannot exceed {0} characters."
+msgstr "La fuente de ingreso no puede exceder {0} caracteres."
+
+msgid "IncomeSource cannot have more than two decimals."
+msgstr "La fuente de ingreso no puede tener más de dos decimales."
+
+msgid "IncomeSource is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La fuente de ingreso no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "IncomeSource is not valid."
+msgstr "La fuente de ingreso no es válida."
+
+msgid "IncomeSource is required."
+msgstr "La fuente de ingreso es obligatoria."
+
+msgid "IncomeSource must be greater than zero."
+msgstr "La fuente de ingreso debe ser mayor que cero."
+
+msgid "InterestAmount cannot be negative."
+msgstr "El monto de interés no puede ser negativo."
+
+msgid "InterestAmount cannot exceed {0} characters."
+msgstr "El monto de interés no puede exceder {0} caracteres."
+
+msgid "InterestAmount cannot have more than two decimals."
+msgstr "El monto de interés no puede tener más de dos decimales."
+
+msgid "InterestAmount is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El monto de interés no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "InterestAmount is not valid."
+msgstr "El monto de interés no es válido."
+
+msgid "InterestAmount is required."
+msgstr "El monto de interés es obligatorio."
+
+msgid "InterestAmount must be greater than zero."
+msgstr "El monto de interés debe ser mayor que cero."
+
+msgid "InterestRate cannot be negative."
+msgstr "La tasa de interés no puede ser negativa."
+
+msgid "InterestRate cannot exceed {0} characters."
+msgstr "La tasa de interés no puede exceder {0} caracteres."
+
+msgid "InterestRate cannot have more than two decimals."
+msgstr "La tasa de interés no puede tener más de dos decimales."
+
+msgid "InterestRate is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La tasa de interés no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "InterestRate is not valid."
+msgstr "La tasa de interés no es válida."
+
+msgid "InterestRate is required."
+msgstr "La tasa de interés es obligatoria."
+
+msgid "InterestRate must be greater than zero."
+msgstr "La tasa de interés debe ser mayor que cero."
+
+msgid "Invalid session."
+msgstr "Sesión inválida."
+
+msgid "Invalid username or password."
+msgstr "Usuario o contraseña incorrectos."
+
+msgid "LastName cannot be negative."
+msgstr "El apellido no puede ser negativo."
+
+msgid "LastName cannot exceed {0} characters."
+msgstr "El apellido no puede exceder {0} caracteres."
+
+msgid "LastName cannot have more than two decimals."
+msgstr "El apellido no puede tener más de dos decimales."
+
+msgid "LastName is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El apellido no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "LastName is not valid."
+msgstr "El apellido no es válido."
+
+msgid "LastName is required."
+msgstr "El apellido es obligatorio."
+
+msgid "LastName must be greater than zero."
+msgstr "El apellido debe ser mayor que cero."
+
+msgid "Late fees can only be charged to an overdue loan that is being collected."
+msgstr "Los cargos por mora solo se pueden aplicar a un préstamo vencido que esté en cobranza."
+
+msgid "Loan {0} not found"
+msgstr "Préstamo {0} no encontrado"
+
+msgid "LoanId cannot be negative."
+msgstr "El préstamo no puede ser negativo."
+
+msgid "LoanId cannot exceed {0} characters."
+msgstr "El préstamo no puede exceder {0} caracteres."
+
+msgid "LoanId cannot have more than two decimals."
+msgstr "El préstamo no puede tener más de dos decimales."
+
+msgid "LoanId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El préstamo no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "LoanId is not valid."
+msgstr "El préstamo no es válido."
+
+msgid "LoanId is required."
+msgstr "El préstamo es obligatorio."
+
+msgid "LoanId must be greater than zero."
+msgstr "El préstamo debe ser mayor que cero."
+
+msgid "Must be at least {0} characters long."
+msgstr "Debe tener al menos {0} caracteres."
+
+msgid "Must contain a digit."
+msgstr "Debe incluir un número."
+
+msgid "Must contain a lowercase letter."
+msgstr "Debe incluir una letra minúscula."
+
+msgid "Must contain a symbol."
+msgstr "Debe incluir un símbolo."
+
+msgid "Must contain an uppercase letter."
+msgstr "Debe incluir una letra mayúscula."
+
+msgid "NationalityCountryId cannot be negative."
+msgstr "La nacionalidad no puede ser negativa."
+
+msgid "NationalityCountryId cannot exceed {0} characters."
+msgstr "La nacionalidad no puede exceder {0} caracteres."
+
+msgid "NationalityCountryId cannot have more than two decimals."
+msgstr "La nacionalidad no puede tener más de dos decimales."
+
+msgid "NationalityCountryId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La nacionalidad no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "NationalityCountryId is not valid."
+msgstr "La nacionalidad no es válida."
+
+msgid "NationalityCountryId is required."
+msgstr "La nacionalidad es obligatoria."
+
+msgid "NationalityCountryId must be greater than zero."
+msgstr "La nacionalidad debe ser mayor que cero."
+
+msgid "No active delinquency policy is configured."
+msgstr "No hay una política de mora activa configurada."
+
+msgid "Occupation cannot be negative."
+msgstr "La ocupación no puede ser negativa."
+
+msgid "Occupation cannot exceed {0} characters."
+msgstr "La ocupación no puede exceder {0} caracteres."
+
+msgid "Occupation cannot have more than two decimals."
+msgstr "La ocupación no puede tener más de dos decimales."
+
+msgid "Occupation is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La ocupación no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Occupation is not valid."
+msgstr "La ocupación no es válida."
+
+msgid "Occupation is required."
+msgstr "La ocupación es obligatoria."
+
+msgid "Occupation must be greater than zero."
+msgstr "La ocupación debe ser mayor que cero."
+
+msgid "Payment {0} not found"
+msgstr "Pago {0} no encontrado"
+
+msgid "PaymentMethod cannot be negative."
+msgstr "El método de pago no puede ser negativo."
+
+msgid "PaymentMethod cannot exceed {0} characters."
+msgstr "El método de pago no puede exceder {0} caracteres."
+
+msgid "PaymentMethod cannot have more than two decimals."
+msgstr "El método de pago no puede tener más de dos decimales."
+
+msgid "PaymentMethod is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El método de pago no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "PaymentMethod is not valid."
+msgstr "El método de pago no es válido."
+
+msgid "PaymentMethod is required."
+msgstr "El método de pago es obligatorio."
+
+msgid "PaymentMethod must be greater than zero."
+msgstr "El método de pago debe ser mayor que cero."
+
+msgid "PenaltyAmount cannot be negative."
+msgstr "Los cargos por mora no pueden ser negativos."
+
+msgid "PenaltyAmount cannot exceed {0} characters."
+msgstr "Los cargos por mora no pueden exceder {0} caracteres."
+
+msgid "PenaltyAmount cannot have more than two decimals."
+msgstr "Los cargos por mora no pueden tener más de dos decimales."
+
+msgid "PenaltyAmount is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "Los cargos por mora no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "PenaltyAmount is not valid."
+msgstr "Los cargos por mora no son válidos."
+
+msgid "PenaltyAmount is required."
+msgstr "Los cargos por mora son obligatorios."
+
+msgid "PenaltyAmount must be greater than zero."
+msgstr "Los cargos por mora deben ser mayores que cero."
+
+msgid "Phone cannot be negative."
+msgstr "El teléfono no puede ser negativo."
+
+msgid "Phone cannot exceed {0} characters."
+msgstr "El teléfono no puede exceder {0} caracteres."
+
+msgid "Phone cannot have more than two decimals."
+msgstr "El teléfono no puede tener más de dos decimales."
+
+msgid "Phone is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El teléfono no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Phone is not valid."
+msgstr "El teléfono no es válido."
+
+msgid "Phone is required."
+msgstr "El teléfono es obligatorio."
+
+msgid "Phone must be greater than zero."
+msgstr "El teléfono debe ser mayor que cero."
+
+msgid "PrincipalAmount cannot be negative."
+msgstr "El monto a capital no puede ser negativo."
+
+msgid "PrincipalAmount cannot exceed {0} characters."
+msgstr "El monto a capital no puede exceder {0} caracteres."
+
+msgid "PrincipalAmount cannot exceed the remaining principal ({0})."
+msgstr "El monto a capital no puede exceder el capital pendiente ({0})."
+
+msgid "PrincipalAmount cannot have more than two decimals."
+msgstr "El monto a capital no puede tener más de dos decimales."
+
+msgid "PrincipalAmount is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El monto a capital no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "PrincipalAmount is not valid."
+msgstr "El monto a capital no es válido."
+
+msgid "PrincipalAmount is required."
+msgstr "El monto a capital es obligatorio."
+
+msgid "PrincipalAmount must be greater than zero."
+msgstr "El monto a capital debe ser mayor que cero."
+
+msgid "Provide the ErrorId {0} to the support team for further analysis."
+msgstr "Proporciona el ID de error {0} al equipo de soporte para su análisis."
+
+msgid "Province cannot be negative."
+msgstr "La provincia no puede ser negativa."
+
+msgid "Province cannot exceed {0} characters."
+msgstr "La provincia no puede exceder {0} caracteres."
+
+msgid "Province cannot have more than two decimals."
+msgstr "La provincia no puede tener más de dos decimales."
+
+msgid "Province is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "La provincia no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "Province is not valid."
+msgstr "La provincia no es válida."
+
+msgid "Province is required."
+msgstr "La provincia es obligatoria."
+
+msgid "Province must be greater than zero."
+msgstr "La provincia debe ser mayor que cero."
+
+msgid "ReferenceNumber cannot be negative."
+msgstr "El número de referencia no puede ser negativo."
+
+msgid "ReferenceNumber cannot exceed {0} characters."
+msgstr "El número de referencia no puede exceder {0} caracteres."
+
+msgid "ReferenceNumber cannot have more than two decimals."
+msgstr "El número de referencia no puede tener más de dos decimales."
+
+msgid "ReferenceNumber is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El número de referencia no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "ReferenceNumber is not valid."
+msgstr "El número de referencia no es válido."
+
+msgid "ReferenceNumber is required."
+msgstr "El número de referencia es obligatorio."
+
+msgid "ReferenceNumber must be greater than zero."
+msgstr "El número de referencia debe ser mayor que cero."
+
+msgid "RiskLevel cannot be negative."
+msgstr "El nivel de riesgo no puede ser negativo."
+
+msgid "RiskLevel cannot exceed {0} characters."
+msgstr "El nivel de riesgo no puede exceder {0} caracteres."
+
+msgid "RiskLevel cannot have more than two decimals."
+msgstr "El nivel de riesgo no puede tener más de dos decimales."
+
+msgid "RiskLevel is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El nivel de riesgo no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "RiskLevel is not valid."
+msgstr "El nivel de riesgo no es válido."
+
+msgid "RiskLevel is required."
+msgstr "El nivel de riesgo es obligatorio."
+
+msgid "RiskLevel must be greater than zero."
+msgstr "El nivel de riesgo debe ser mayor que cero."
+
+msgid "TaxId cannot be negative."
+msgstr "El RNC / TIN no puede ser negativo."
+
+msgid "TaxId cannot exceed {0} characters."
+msgstr "El RNC / TIN no puede exceder {0} caracteres."
+
+msgid "TaxId cannot have more than two decimals."
+msgstr "El RNC / TIN no puede tener más de dos decimales."
+
+msgid "TaxId is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El RNC / TIN no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "TaxId is not valid."
+msgstr "El RNC / TIN no es válido."
+
+msgid "TaxId is required."
+msgstr "El RNC / TIN es obligatorio."
+
+msgid "TaxId must be greater than zero."
+msgstr "El RNC / TIN debe ser mayor que cero."
+
+msgid "TermMonths cannot be negative."
+msgstr "El plazo (en meses) no puede ser negativo."
+
+msgid "TermMonths cannot exceed {0} characters."
+msgstr "El plazo (en meses) no puede exceder {0} caracteres."
+
+msgid "TermMonths cannot have more than two decimals."
+msgstr "El plazo (en meses) no puede tener más de dos decimales."
+
+msgid "TermMonths is not valid ({0} to {1} digits, spaces, dashes or parentheses)."
+msgstr "El plazo (en meses) no es válido ({0} a {1} dígitos, espacios, guiones o paréntesis)."
+
+msgid "TermMonths is not valid."
+msgstr "El plazo (en meses) no es válido."
+
+msgid "TermMonths is required."
+msgstr "El plazo (en meses) es obligatorio."
+
+msgid "TermMonths must be greater than zero."
+msgstr "El plazo (en meses) debe ser mayor que cero."
+
+msgid "The country does not exist."
+msgstr "El país no existe."
+
+msgid "The current password is incorrect."
+msgstr "La contraseña actual es incorrecta."
+
+msgid "The customer is not valid."
+msgstr "Los datos del cliente no son válidos."
+
+msgid "The identification type does not exist."
+msgstr "El tipo de documento no existe."
+
+msgid "The loan balance changed while processing the payment. Please refresh and try again."
+msgstr "El saldo del préstamo cambió mientras se procesaba el pago. Actualiza e inténtalo de nuevo."
+
+msgid "The loan request is not valid."
+msgstr "La solicitud de préstamo no es válida."
+
+msgid "The nationality country does not exist."
+msgstr "El país de nacionalidad no existe."
+
+msgid "The new password does not meet the requirements."
+msgstr "La nueva contraseña no cumple los requisitos."
+
+msgid "The new password must be different from the current one."
+msgstr "La nueva contraseña debe ser diferente de la actual."
+
+msgid "The payment is not valid."
+msgstr "El pago no es válido."
+
+msgid "The payment total must be greater than zero."
+msgstr "El total del pago debe ser mayor que cero."
+
+msgid "The requested resource was not found."
+msgstr "No se encontró el recurso solicitado."
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Approved"
+msgstr "Aprobado"
+
+msgid "Disbursed"
+msgstr "Desembolsado"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid "PartiallyPaid"
+msgstr "Parcialmente pagado"
+
+msgid "FullyPaid"
+msgstr "Pagado en su totalidad"
+
+msgid "Defaulted"
+msgstr "En mora"
+
+msgid "WrittenOff"
+msgstr "Castigado"
+
+msgid "Restructured"
+msgstr "Reestructurado"
+
+msgid "Closed"
+msgstr "Cerrado"
+
+msgid "Completed"
+msgstr "Completado"
+
+msgid "Failed"
+msgstr "Fallido"
+
+msgid "Reversed"
+msgstr "Reversado"
+
+msgid "Inactive"
+msgstr "Inactivo"
+
+msgid "Suspended"
+msgstr "Suspendido"
+
+msgid "Blocked"
+msgstr "Bloqueado"
+
+msgid "approved"
+msgstr "aprobado"
+
+msgid "disbursed"
+msgstr "desembolsado"
+
+msgid "cancelled"
+msgstr "cancelado"
+
+msgid "closed"
+msgstr "cerrado"
+
+msgid "A loan with status {0} cannot receive payments."
+msgstr "Un préstamo con estado {0} no puede recibir pagos."
+
+msgid "A loan with status {0} cannot be {1}."
+msgstr "Un préstamo con estado {0} no puede ser {1}."
+
+msgid "The action is not valid."
+msgstr "La acción no es válida."
+
+msgid "Action is not valid."
+msgstr "La acción no es válida."
+
+msgid "The loan is not valid."
+msgstr "El préstamo no es válido."
+
+msgid "The loan changed while processing the request. Please refresh and try again."
+msgstr "El préstamo cambió mientras se procesaba la solicitud. Actualiza e inténtalo de nuevo."
+
+msgid "The status cannot be set directly; use approve, disburse, cancel or close."
+msgstr "El estado no se puede cambiar directamente; usa aprobar, desembolsar, cancelar o cerrar."
+
+msgid "The interest rate of a loan with status {0} cannot be changed."
+msgstr "La tasa de interés de un préstamo con estado {0} no se puede cambiar."
+
+msgid "The default currency (DOP) does not exist."
+msgstr "La moneda predeterminada (DOP) no existe."
+
+msgid "The customer is blacklisted and cannot receive a loan."
+msgstr "El cliente está en la lista negra y no puede recibir un préstamo."
+
+msgid "The customer is blacklisted."
+msgstr "El cliente está en la lista negra."
+
+msgid "The customer is {0}, not {1}."
+msgstr "El cliente está {0}, no {1}."
+
+msgid "The customer has a loan more than {0} days overdue."
+msgstr "El cliente tiene un préstamo con más de {0} días de atraso."
+
+msgid "The loan would take the customer's outstanding credit to {0}, above the credit limit of {1}."
+msgstr "El préstamo llevaría el crédito pendiente del cliente a {0}, por encima de su límite de crédito de {1}."
+
+msgid "PrincipalAmount cannot exceed {0}."
+msgstr "El monto del préstamo no puede exceder {0}."
+
+msgid "InterestRate cannot exceed {0}%."
+msgstr "La tasa de interés no puede exceder {0}%."
+
+msgid "TermMonths cannot exceed {0}."
+msgstr "El plazo no puede exceder {0} meses."
+
+msgid "PenaltyAmount cannot exceed the late fees owed ({0})."
+msgstr "La penalidad no puede exceder los cargos por mora pendientes ({0})."
+
+msgid "The reversal is not valid."
+msgstr "La reversión no es válida."
+
+msgid "The reason is required: between {0} and {1} characters."
+msgstr "El motivo es obligatorio: entre {0} y {1} caracteres."
+
+msgid "Only a completed payment can be reversed; this one is {0}."
+msgstr "Solo se puede reversar un pago completado; este está {0}."
+
+msgid "The payments of a loan with status {0} cannot be reversed."
+msgstr "Los pagos de un préstamo con estado {0} no se pueden reversar."
+
+msgid "The payment was reversed in the meantime."
+msgstr "El pago fue reversado mientras tanto."
+
+msgid "The loan's totals do not allow reversing this payment."
+msgstr "Los totales del préstamo no permiten reversar este pago."
+
+msgid "The late fees were charged in the meantime. Please refresh."
+msgstr "Las penalidades se cargaron mientras tanto. Actualiza la pantalla."
+
+msgid "Customer is blacklisted: {0}"
+msgstr "El cliente está en la lista negra: {0}"
+
+msgid "Credit score is below minimum threshold ({0})"
+msgstr "El puntaje de crédito está por debajo del mínimo ({0})"
+
+msgid "Loan amount (DOP {0}) exceeds credit limit (DOP {1})"
+msgstr "El monto del préstamo (DOP {0}) excede el límite de crédito (DOP {1})"
+
+msgid "Customer has active delinquent loans"
+msgstr "El cliente tiene préstamos activos en mora"
+
+msgid "Monthly income insufficient for loan repayment (income should be 3x monthly payment)"
+msgstr "El ingreso mensual es insuficiente para pagar el préstamo (debe ser 3 veces la cuota mensual)"
+
+msgid "Failed to retrieve created loan"
+msgstr "No se pudo obtener el préstamo creado"
+
+msgid "At least one branch is required."
+msgstr "Se requiere al menos una sucursal."
+
+msgid "The document is not valid."
+msgstr "El documento no es válido."
+
+msgid "The file is empty."
+msgstr "El archivo está vacío."
+
+msgid "The file cannot exceed {0} MB."
+msgstr "El archivo no puede exceder {0} MB."
+
+msgid "The file name is required."
+msgstr "El nombre del archivo es obligatorio."
+
+msgid "The file name cannot exceed {0} characters."
+msgstr "El nombre del archivo no puede exceder {0} caracteres."
+
+msgid "The file name cannot contain path separators."
+msgstr "El nombre del archivo no puede contener separadores de ruta."
+
+msgid "The file type is not allowed; use pdf, jpg, jpeg, png, xls, xlsx or csv."
+msgstr "El tipo de archivo no está permitido; usa pdf, jpg, jpeg, png, xls, xlsx o csv."
+
+msgid "The file URL must be an absolute https address."
+msgstr "La URL del archivo debe ser una dirección https absoluta."
+
+msgid "The file size cannot be negative."
+msgstr "El tamaño del archivo no puede ser negativo."
+
+msgid "The document type is not recognized."
+msgstr "El tipo de documento no se reconoce."
+
+msgid "The content of the file does not match its type."
+msgstr "El contenido del archivo no corresponde a su tipo."
+
+msgid "This document is an external reference; open its link instead."
+msgstr "Este documento es una referencia externa; abre su enlace."
+
+msgid "This document is an external reference and has no stored file."
+msgstr "Este documento es una referencia externa y no tiene archivo almacenado."
+
+msgid "The file is no longer in the storage."
+msgstr "El archivo ya no está en el almacenamiento."
+
+msgid "The Azure storage that holds this file is not configured."
+msgstr "El almacenamiento de Azure que guarda este archivo no está configurado."
+
+msgid "The account name must be {0} to {1} lower-case letters or digits."
+msgstr "El nombre de la cuenta debe tener de {0} a {1} letras minúsculas o dígitos."
+
+msgid "The container name must be {0} to {1} lower-case letters, digits or single hyphens."
+msgstr "El nombre del contenedor debe tener de {0} a {1} letras minúsculas, dígitos o guiones simples."
+
+msgid "The account and the container are required to enable Azure."
+msgstr "La cuenta y el contenedor son obligatorios para activar Azure."
+
+msgid "The storage settings are not valid."
+msgstr "La configuración de almacenamiento no es válida."
+
+msgid "Azure storage cannot be enabled."
+msgstr "No se puede activar el almacenamiento de Azure."
+
+msgid "Employee {0} not found"
+msgstr "Empleado {0} no encontrado"
+
+msgid "RoleId is required."
+msgstr "El rol es obligatorio."
+
+msgid "The role does not exist."
+msgstr "El rol no existe."
+
+msgid "The branch does not exist."
+msgstr "La sucursal no existe."
+
+msgid "The employee is not valid."
+msgstr "El empleado no es válido."
+
+msgid "The user name must be {0} to {1} characters: lower-case letters, digits, dots, dashes or underscores."
+msgstr "El nombre de usuario debe tener de {0} a {1} caracteres: letras minúsculas, dígitos, puntos, guiones o guiones bajos."
+
+msgid "An employee with this user name or email already exists."
+msgstr "Ya existe un empleado con este usuario o correo."
+
+msgid "An employee with this user name already exists."
+msgstr "Ya existe un empleado con este nombre de usuario."
+
+msgid "An employee with this email already exists."
+msgstr "Ya existe un empleado con este correo."
+
+msgid "You cannot change your own role."
+msgstr "No puedes cambiar tu propio rol."
+
+msgid "The last active administrator cannot lose the administrator role."
+msgstr "El último administrador activo no puede perder el rol de administrador."
+
+msgid "You cannot deactivate your own account."
+msgstr "No puedes desactivar tu propia cuenta."
+
+msgid "The last active administrator cannot be deactivated."
+msgstr "El último administrador activo no se puede desactivar."
+
+msgid "Use the change password option for your own account."
+msgstr "Usa la opción de cambiar contraseña para tu propia cuenta."
+
+msgid "A legal person must be identified by RNC."
+msgstr "Una persona jurídica debe identificarse con RNC."
+
+msgid "An RNC can only be used for a legal person."
+msgstr "Un RNC solo se puede usar para una persona jurídica."
+
+msgid "A physical person can only be identified by cédula or passport."
+msgstr "Una persona física solo se puede identificar con cédula o pasaporte."
+
+msgid "A cédula can only be used by Dominican nationals."
+msgstr "Una cédula solo la pueden usar dominicanos."
+
+msgid "Phone is not valid: use the international format with the country code, for example +{0}."
+msgstr "El teléfono no es válido: usa el formato internacional con el código del país, por ejemplo +{0}."
+
+msgid "AlternativePhone is not valid: use the international format with the country code, for example +{0}."
+msgstr "El teléfono alternativo no es válido: usa el formato internacional con el código del país, por ejemplo +{0}."
+
+msgid "The blacklist change is not valid."
+msgstr "El cambio en la lista negra no es válido."
+
+msgid "The customer is already blacklisted."
+msgstr "El cliente ya está en la lista negra."
+
+msgid "The customer is not blacklisted."
+msgstr "El cliente no está en la lista negra."
+
+msgid "The write-off is not valid."
+msgstr "El castigo no es válido."
+
+msgid "A loan with status {0} cannot be written off."
+msgstr "Un préstamo con estado {0} no se puede castigar."
+
+msgid "The loan has no balance to write off."
+msgstr "El préstamo no tiene saldo que castigar."
+
+msgid "The loan can only be written off after {0} days overdue; this one has {1}."
+msgstr "El préstamo solo se puede castigar pasados {0} días de atraso; este tiene {1}."

@@ -32,6 +32,7 @@ namespace Infrastructure
         public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder builder, IConfiguration config) =>
             builder
                 .UsePersistence()
+                .UseRequestLocalization()
                 .UseExceptionMiddleware();
 
         public static async Task InitSeeder(this IServiceProvider service)

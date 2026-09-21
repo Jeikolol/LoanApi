@@ -25,6 +25,7 @@ namespace Persistence
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
+                    options.MapInboundClaims = false;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -37,7 +38,9 @@ namespace Persistence
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(jwt.Key)
                         ),
-                        ClockSkew = TimeSpan.Zero
+                        ClockSkew = TimeSpan.Zero,
+                        NameClaimType = "unique_name",
+                        RoleClaimType = "role"
                     };
                 });
 
@@ -85,6 +88,12 @@ namespace Persistence
 
         public static IApplicationBuilder UseSwaggerVersion(this IApplicationBuilder app)
         {
+            if (!Microsoft.Extensions.Hosting.HostEnvironmentEnvExtensions.IsDevelopment(
+                    app.ApplicationServices.GetRequiredService<Microsoft.Extensions.Hosting.IHostEnvironment>()))
+            {
+                return app;
+            }
+
             var provider = app.ApplicationServices
                 .GetRequiredService<IApiVersionDescriptionProvider>();
 

@@ -1,3 +1,4 @@
+using Application.Exceptions;
 using Application.Features.Delinquency.Queries;
 using Application.Models.Responses;
 using Dapper;
@@ -28,7 +29,7 @@ namespace Application.Features.Delinquency.Handlers
                 WHERE L.Id = @LoanId AND L.IsDeleted = 0";
 
             var status = await _connection.QueryFirstOrDefaultAsync<DelinquencyStatusResponse>(query, new { request.LoanId });
-            return status ?? throw new Exception($"Loan {request.LoanId} not found");
+            return status ?? throw new NotFoundException($"Loan {request.LoanId} not found");
         }
     }
 }

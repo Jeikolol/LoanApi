@@ -1,0 +1,14 @@
+# Traducciones del API de LoanWeb (en).
+# Cada msgid es el mensaje en inglés que produce el API; los valores variables (números, GUID) se
+# reemplazan por {0}, {1}, ... antes de buscar la traducción.
+msgid ""
+msgstr ""
+"Project-Id-Version: LoanApi\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# English is the source language, so no entries are required.
+# Add a msgid/msgstr pair here to override the wording of a message.

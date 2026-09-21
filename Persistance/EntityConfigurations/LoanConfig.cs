@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -87,6 +87,11 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.RemainingInterest)
                    .IsRequired()
                    .HasPrecision(18, 2);
+
+            builder.Property(x => x.LateFeesCharged)
+                   .IsRequired()
+                   .HasPrecision(18, 2)
+                   .HasDefaultValue(0m);
 
             builder.Property(x => x.AmortizationBalance)
                    .IsRequired()

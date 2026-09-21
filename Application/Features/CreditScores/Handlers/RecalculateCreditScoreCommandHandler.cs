@@ -1,3 +1,4 @@
+using Application.Exceptions;
 using Application.Features.CreditScores.Commands;
 using Application.Models.Responses;
 using Application.Services;
@@ -11,7 +12,7 @@ using System.Data;
 namespace Application.Features.CreditScores.Handlers
 {
     internal record RecalculateCustomerQueryResult(Guid Id, string FirstName, string LastName, decimal CreditLimit, bool IsBlacklisted);
-    internal record RecalculateLoanQueryResult(Guid Id, DateTime CreatedOn, decimal PrincipalRemaining, int LoanStatus);
+    internal record RecalculateLoanQueryResult(Guid Id, DateTime CreatedOn, decimal PrincipalRemaining, int LoanStatus, int DaysOverdue);
     internal record RecalculatePaymentQueryResult(Guid Id, Guid LoanId, int Status);
 
     public class RecalculateCreditScoreCommandHandler : IRequestHandler<RecalculateCreditScoreCommand, CreditScoreResponse>
@@ -39,10 +40,10 @@ namespace Application.Features.CreditScores.Handlers
             var customerData = await _connection.QuerySingleOrDefaultAsync<RecalculateCustomerQueryResult>(
                 customerSql, new { request.CustomerId });
             if (customerData == null)
-                throw new InvalidOperationException($"Customer {request.CustomerId} not found");
+                throw new NotFoundException($"Customer {request.CustomerId} not found");
 
             const string loansSql = @"
-                SELECT Id, CreatedOn, PrincipalRemaining, LoanStatus
+                SELECT Id, CreatedOn, PrincipalRemaining, LoanStatus, DaysOverdue
                 FROM [Loans].[Loan]
                 WHERE CustomerId = @CustomerId AND IsDeleted = 0";
 
@@ -71,6 +72,7 @@ namespace Application.Features.CreditScores.Handlers
                     CreatedOn = l.CreatedOn,
                     PrincipalRemaining = l.PrincipalRemaining,
                     LoanStatus = (LoanStatus)l.LoanStatus,
+                    DaysOverdue = l.DaysOverdue,
                     Payments = payments
                         .Where(p => p.LoanId == l.Id)
                         .Select(p => new LoanPayment
@@ -83,6 +85,40 @@ namespace Application.Features.CreditScores.Handlers
             };
 
             var creditScore = _creditScoreService.CalculateCreditScore(customer);
+
+            Guid? existingScoreId = await _connection.QueryFirstOrDefaultAsync<Guid?>(
+                "SELECT Id FROM [Customers].[CreditScore] WHERE CustomerId = @CustomerId AND IsDeleted = 0",
+                new { request.CustomerId });
+
+            if (existingScoreId is null)
+            {
+                creditScore.Id = Guid.NewGuid();
+
+                await _connection.ExecuteAsync(
+                    @"INSERT INTO [Customers].[CreditScore]
+                        (Id, CustomerId, Score, LastCalculatedDate, PaymentHistoryScore, CreditUtilizationScore, CreditAgeScore,
+                         DefaultHistoryScore, CreditRating, CreatedOn, IsActive, IsDeleted)
+                      VALUES
+                        (@Id, @CustomerId, @Score, @LastCalculatedDate, @PaymentHistoryScore, @CreditUtilizationScore, @CreditAgeScore,
+                         @DefaultHistoryScore, @CreditRating, @Now, 1, 0)",
+                    new
+                    {
+                        creditScore.Id,
+                        request.CustomerId,
+                        creditScore.Score,
+                        creditScore.LastCalculatedDate,
+                        creditScore.PaymentHistoryScore,
+                        creditScore.CreditUtilizationScore,
+                        creditScore.CreditAgeScore,
+                        creditScore.DefaultHistoryScore,
+                        CreditRating = (int)creditScore.CreditRating,
+                        Now = DateTime.UtcNow,
+                    });
+
+                return ToResponse(creditScore, request.CustomerId);
+            }
+
+            creditScore.Id = existingScoreId.Value;
 
             const string updateSql = @"
                 UPDATE [Customers].[CreditScore]
@@ -109,17 +145,18 @@ namespace Application.Features.CreditScores.Handlers
                 Now = DateTime.UtcNow
             });
 
-            return new CreditScoreResponse(
-                creditScore.Id,
-                request.CustomerId,
-                creditScore.Score,
-                creditScore.CreditRating,
-                creditScore.LastCalculatedDate,
-                creditScore.PaymentHistoryScore,
-                creditScore.CreditUtilizationScore,
-                creditScore.CreditAgeScore,
-                creditScore.DefaultHistoryScore
-            );
+            return ToResponse(creditScore, request.CustomerId);
         }
+
+        private static CreditScoreResponse ToResponse(CreditScore creditScore, Guid customerId) => new(
+            creditScore.Id,
+            customerId,
+            creditScore.Score,
+            creditScore.CreditRating,
+            creditScore.LastCalculatedDate,
+            creditScore.PaymentHistoryScore,
+            creditScore.CreditUtilizationScore,
+            creditScore.CreditAgeScore,
+            creditScore.DefaultHistoryScore);
     }
 }

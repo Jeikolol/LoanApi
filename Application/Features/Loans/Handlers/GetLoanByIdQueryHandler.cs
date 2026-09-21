@@ -35,6 +35,8 @@ namespace Application.Features.Loans.Handlers
                        L.DaysOverdue, L.DelinquencyPercentage, L.PrincipalRemaining,
                        L.BranchId, CUR.CodeIso3 AS CurrencyCode, L.LoanPurpose,
                        L.TotalInterestAmount, L.PaidInterest, L.RemainingInterest,
+                       L.LateFeesCharged,
+                       (SELECT ISNULL(SUM(P.PenaltyAmount), 0) FROM [Loans].[LoanPayment] P WHERE P.LoanId = L.Id AND P.Status = 1 AND P.IsDeleted = 0) AS LateFeesPaid,
                        L.AmortizationBalance, L.PrincipalPaid, L.MaxCredit,
                        L.RequiresGuarantor, L.GuarantorId, L.LastPaymentDate,
                        L.CreatedOn, L.UpdatedOn
@@ -44,7 +46,12 @@ namespace Application.Features.Loans.Handlers
                 WHERE L.Id = @Id AND L.IsDeleted = 0";
 
             var loan = await _connection.QueryFirstOrDefaultAsync<LoanDetailResponse>(query, new { request.Id });
-            return loan ?? throw new NotFoundException($"Loan {request.Id} not found");
+            if (loan is null) throw new NotFoundException($"Loan {request.Id} not found");
+
+            string? branchName = await _connection.QueryFirstOrDefaultAsync<string>(
+                "SELECT Name FROM [Admin].[Branch] WHERE Id = @BranchId", new { loan.BranchId });
+
+            return loan with { BranchName = branchName };
         }
     }
 }

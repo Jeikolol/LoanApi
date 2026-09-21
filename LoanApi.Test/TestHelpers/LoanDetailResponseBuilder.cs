@@ -1,4 +1,4 @@
-﻿using Application.Models.Responses;
+using Application.Models.Responses;
 using Domain.Enums;
 
 namespace LoanApi.Tests.TestHelpers;
@@ -129,6 +129,8 @@ public class LoanDetailResponseBuilder
             TotalInterestAmount: _totalInterestAmount,
             PaidInterest: _paidInterest,
             RemainingInterest: _remainingInterest,
+            LateFeesCharged: 0m,
+            LateFeesPaid: 0m,
             AmortizationBalance: _amortizationBalance,
             PrincipalPaid: _principalPaid,
             MaxCredit: _maxCredit,

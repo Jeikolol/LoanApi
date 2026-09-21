@@ -1,3 +1,4 @@
+using Application.Exceptions;
 using Application.Features.Loans.Queries;
 using Application.Services;
 using Dapper;
@@ -13,16 +14,13 @@ namespace Application.Features.Loans.Handlers
     {
         private readonly IDbConnection _connection;
         private readonly ILogger<GetAmortizationScheduleQueryHandler> _logger;
-        private readonly LoanValidationService _loanValidationService;
 
         public GetAmortizationScheduleQueryHandler(
             IDbConnection connection,
-            ILogger<GetAmortizationScheduleQueryHandler> logger,
-            LoanValidationService loanValidationService)
+            ILogger<GetAmortizationScheduleQueryHandler> logger)
         {
             _connection = connection;
             _logger = logger;
-            _loanValidationService = loanValidationService;
         }
 
         public async Task<List<AmortizationScheduleItem>> Handle(GetAmortizationScheduleQuery request, CancellationToken cancellationToken)
@@ -36,18 +34,19 @@ namespace Application.Features.Loans.Handlers
 
             var loan = await _connection.QuerySingleOrDefaultAsync<AmortizationLoanQueryResult>(sql, new { request.LoanId });
             if (loan == null)
-                throw new InvalidOperationException($"Loan {request.LoanId} not found");
+                throw new NotFoundException($"Loan {request.LoanId} not found");
 
-            var schedule = _loanValidationService.GenerateAmortizationSchedule(
-                loan.PrincipalAmount,
-                loan.InterestRate,
-                loan.TermMonths);
-
-            for (int i = 0; i < schedule.Count; i++)
+            // The same annuity the loan's installment was computed with, so the schedule always agrees with it.
+            var installments = AmortizationSchedule.Build(loan.PrincipalAmount, loan.InterestRate, loan.TermMonths);
+            var schedule = installments.Select(i => new AmortizationScheduleItem
             {
-                schedule[i].DueDate = loan.DisbursementDate.AddMonths(i + 1);
-                schedule[i].TotalPayment = schedule[i].PrincipalPayment + schedule[i].InterestPayment;
-            }
+                PaymentNumber = i.Number,
+                DueDate = loan.DisbursementDate.AddMonths(i.Number),
+                PrincipalPayment = i.Principal,
+                InterestPayment = i.Interest,
+                TotalPayment = i.Payment,
+                RemainingBalance = i.BalanceAfter,
+            }).ToList();
 
             return schedule;
         }

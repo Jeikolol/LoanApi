@@ -22,6 +22,56 @@ namespace Migrations.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("DurationMs")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Payload")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<bool>("Succeeded")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Action");
+
+                    b.HasIndex("OccurredOn");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuditLog", "Admin");
+                });
+
             modelBuilder.Entity("Domain.Entities.Branch", b =>
                 {
                     b.Property<Guid>("Id")
@@ -52,7 +102,9 @@ namespace Migrations.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -78,6 +130,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -114,7 +168,9 @@ namespace Migrations.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -131,6 +187,14 @@ namespace Migrations.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("PhoneCode")
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<string>("PhoneMask")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uniqueidentifier");
 
@@ -144,6 +208,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -189,7 +255,9 @@ namespace Migrations.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -222,6 +290,8 @@ namespace Migrations.Migrations
                         .IsUnique();
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -259,7 +329,9 @@ namespace Migrations.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDefault")
                         .ValueGeneratedOnAdd()
@@ -294,6 +366,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -380,7 +454,9 @@ namespace Migrations.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsBlacklisted")
                         .ValueGeneratedOnAdd()
@@ -447,6 +523,8 @@ namespace Migrations.Migrations
 
                     b.HasIndex("IdentificationTypeId");
 
+                    b.HasIndex("IsActive");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("NationalityCountryId");
@@ -500,7 +578,9 @@ namespace Migrations.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -529,6 +609,11 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive")
+                        .IsUnique()
+                        .HasDatabaseName("UX_DelinquencyPolicy_OneActive")
+                        .HasFilter("[IsActive] = 1 AND [IsDeleted] = 0");
 
                     b.HasIndex("IsDeleted");
 
@@ -569,7 +654,9 @@ namespace Migrations.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -584,6 +671,9 @@ namespace Migrations.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("MustChangePassword")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -594,6 +684,9 @@ namespace Migrations.Migrations
 
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("TokensValidFrom")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uniqueidentifier");
@@ -618,6 +711,8 @@ namespace Migrations.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -659,7 +754,9 @@ namespace Migrations.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -691,6 +788,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -756,7 +855,9 @@ namespace Migrations.Migrations
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -765,6 +866,15 @@ namespace Migrations.Migrations
 
                     b.Property<DateTime?>("LastPaymentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("LateFeesCharged")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<DateOnly?>("LateFeesChargedThrough")
+                        .HasColumnType("date");
 
                     b.Property<string>("LoanNumber")
                         .IsRequired()
@@ -838,6 +948,8 @@ namespace Migrations.Migrations
 
                     b.HasIndex("DeletedById");
 
+                    b.HasIndex("IsActive");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("UpdatedById");
@@ -880,7 +992,9 @@ namespace Migrations.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -892,6 +1006,15 @@ namespace Migrations.Migrations
 
                     b.Property<int>("MimeType")
                         .HasColumnType("int");
+
+                    b.Property<string>("StorageKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("StorageProvider")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<Guid?>("UpdatedById")
                         .HasColumnType("uniqueidentifier");
@@ -909,6 +1032,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CreatedOn");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -945,7 +1070,9 @@ namespace Migrations.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -973,6 +1100,13 @@ namespace Migrations.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("ReversalReason")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime?>("ReversedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -995,6 +1129,8 @@ namespace Migrations.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("IsDeleted");
 
@@ -1032,7 +1168,9 @@ namespace Migrations.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
@@ -1059,11 +1197,75 @@ namespace Migrations.Migrations
 
                     b.HasIndex("DeletedById");
 
+                    b.HasIndex("IsActive");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("Role", "Admin");
+                });
+
+            modelBuilder.Entity("Domain.Entities.StorageSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AzureAccountName")
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
+                    b.Property<string>("AzureContainer")
+                        .HasMaxLength(63)
+                        .HasColumnType("nvarchar(63)");
+
+                    b.Property<bool>("AzureEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("CreatedOn");
+
+                    b.HasIndex("DeletedById");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("IsDeleted");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("StorageSetting", "Admin");
                 });
 
             modelBuilder.Entity("Domain.Entities.Branch", b =>
@@ -1427,6 +1629,30 @@ namespace Migrations.Migrations
                 });
 
             modelBuilder.Entity("Domain.Entities.Role", b =>
+                {
+                    b.HasOne("Domain.Entities.Employee", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Employee", "DeletedBy")
+                        .WithMany()
+                        .HasForeignKey("DeletedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.Entities.Employee", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DeletedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.Entities.StorageSetting", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "CreatedBy")
                         .WithMany()

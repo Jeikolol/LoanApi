@@ -7,7 +7,7 @@ using Application.Features.CreditScores.Commands;
 namespace LoanApi.Controllers.Modules.Customers
 {
     [Authorize]
-    [Route("credit-scores")]
+    [Route("api/v{version:apiVersion}/customers/credit-scores")]
     public class CreditScoresController : CustomerModuleController
     {
         /// <summary>

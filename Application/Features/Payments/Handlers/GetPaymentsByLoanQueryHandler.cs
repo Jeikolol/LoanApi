@@ -25,8 +25,10 @@ namespace Application.Features.Payments.Handlers
             const string query = @"
                 SELECT LP.Id, LP.LoanId, LP.PaymentDate, LP.PrincipalAmount, LP.InterestAmount,
                        LP.PenaltyAmount, LP.TotalPaymentAmount, LP.PaymentMethod, LP.ReferenceNumber,
-                       LP.Status, LP.CreatedOn
+                       LP.Status, LP.CreatedOn, LP.ReversalReason,
+                       NULLIF(LTRIM(RTRIM(CONCAT(E.FirstName, ' ', E.LastName))), '') AS RegisteredBy
                 FROM [Loans].[LoanPayment] LP
+                LEFT JOIN [Admin].[Employee] E ON E.Id = LP.CreatedById
                 WHERE LP.LoanId = @LoanId AND LP.IsDeleted = 0
                 ORDER BY LP.PaymentDate DESC
                 OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY;
@@ -37,7 +39,7 @@ namespace Application.Features.Payments.Handlers
             var args = new { request.LoanId, Skip = request.GetSkip(), Take = request.PageSize };
 
             using var multi = await _connection.QueryMultipleAsync(query, args);
-            var payments = (await multi.ReadAsync<LoanPaymentResponse>()).ToList();
+            var payments = (await multi.ReadAsync<PaymentRow>()).Select(p => p.ToResponse()).ToList();
             var totalCount = await multi.ReadFirstAsync<int>();
 
             return new PaginatedResponse<LoanPaymentResponse>(payments, request.PageNumber, request.PageSize, totalCount);

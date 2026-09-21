@@ -24,6 +24,8 @@ namespace Application.Models.Responses
         decimal TotalInterestAmount,
         decimal PaidInterest,
         decimal RemainingInterest,
+        decimal LateFeesCharged,
+        decimal LateFeesPaid,
         decimal AmortizationBalance,
         decimal PrincipalPaid,
         decimal MaxCredit,
@@ -32,5 +34,9 @@ namespace Application.Models.Responses
         DateTime? LastPaymentDate,
         DateTime CreatedOn,
         DateTime? UpdatedOn
-    );
+    )
+    {
+        /// <summary>Only filled when the loan is read on its own; it is not part of the constructor Dapper matches.</summary>
+        public string? BranchName { get; init; }
+    }
 }

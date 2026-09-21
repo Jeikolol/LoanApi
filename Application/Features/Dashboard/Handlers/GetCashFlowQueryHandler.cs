@@ -24,20 +24,24 @@ namespace Application.Features.Dashboard.Handlers
                   SELECT
                     ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS WeekNum,
                     DATEADD(WEEK, -(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1), CAST(GETDATE() AS DATE)) AS WeekDate,
-                    CONCAT('Week ', ROW_NUMBER() OVER (ORDER BY (SELECT NULL))) AS WeekLabel
+                    CONCAT(FORMAT(DATEADD(DAY, -6, DATEADD(WEEK, -(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1), CAST(GETDATE() AS DATE))), 'dd/MM'), ' - ',
+                           FORMAT(DATEADD(WEEK, -(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1), CAST(GETDATE() AS DATE)), 'dd/MM')) AS WeekLabel
                   FROM (SELECT TOP 4 1 AS rn FROM sys.objects) a
                 )
                 SELECT
                   w.WeekLabel,
-                  ISNULL(SUM(CASE WHEN CAST(l.DisbursementDate AS DATE) BETWEEN DATEADD(DAY, -7, w.WeekDate) AND w.WeekDate
-                                     THEN l.PrincipalAmount ELSE 0 END), 0) AS Disbursements,
-                  ISNULL(SUM(CASE WHEN CAST(p.PaymentDate AS DATE) BETWEEN DATEADD(DAY, -7, w.WeekDate) AND w.WeekDate
-                                     THEN p.TotalPaymentAmount ELSE 0 END), 0) AS Collections
+                  ISNULL((SELECT SUM(l.PrincipalAmount)
+                          FROM [Loans].[Loan] l
+                          WHERE l.IsDeleted = 0 AND l.LoanStatus NOT IN (0, 1)
+                            AND l.DisbursementDate >= DATEADD(DAY, -6, w.WeekDate)
+                            AND l.DisbursementDate <  DATEADD(DAY, 1, w.WeekDate)), 0) AS Disbursements,
+                  ISNULL((SELECT SUM(p.TotalPaymentAmount)
+                          FROM [Loans].[LoanPayment] p
+                          WHERE p.IsDeleted = 0 AND p.Status = 1
+                            AND p.PaymentDate >= DATEADD(DAY, -6, w.WeekDate)
+                            AND p.PaymentDate <  DATEADD(DAY, 1, w.WeekDate)), 0) AS Collections
                 FROM Weeks w
-                LEFT JOIN [Loans].[Loan] l ON l.IsDeleted = 0
-                LEFT JOIN [Loans].[LoanPayment] p ON p.IsDeleted = 0
-                GROUP BY w.WeekNum, w.WeekLabel, w.WeekDate
-                ORDER BY w.WeekNum";
+                ORDER BY w.WeekNum DESC";
 
             var cashFlows = (await _connection.QueryAsync<CashFlowQueryResult>(sql)).ToList();
 

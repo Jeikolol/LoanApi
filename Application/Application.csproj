@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Persistance\Persistence.csproj" />
+    <ProjectReference Include="..\LoanApi.Storage\LoanApi.Storage.csproj" />
   </ItemGroup>
 
 </Project>

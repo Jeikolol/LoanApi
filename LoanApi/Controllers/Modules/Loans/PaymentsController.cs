@@ -5,11 +5,13 @@ using LoanApi.Common.Pagination;
 using LoanApi.Common.Extensions;
 using Application.Features.Payments.Queries;
 using Application.Features.Payments.Commands;
+using LoanApi.Controllers.Modules.Loans.Requests;
+using Domain.Constants;
 
 namespace LoanApi.Controllers.Modules.Loans
 {
     [Authorize]
-    [Route("payments")]
+    [Route("api/v{version:apiVersion}/payments")]
     public class PaymentsController : LoanModuleController
     {
         /// <summary>
@@ -38,18 +40,31 @@ namespace LoanApi.Controllers.Modules.Loans
         /// Record a payment for a loan
         /// </summary>
         [HttpPost("loan/{loanId:guid}")]
-        public async Task<IActionResult> Create(Guid loanId, [FromBody] dynamic request)
+        public async Task<IActionResult> Create(Guid loanId, [FromBody] RecordPaymentRequest request)
         {
             var command = new CreatePaymentCommand
             {
                 LoanId = loanId,
-                PrincipalAmount = request.PrincipalAmount ?? 0,
-                InterestAmount = request.InterestAmount ?? 0,
-                PenaltyAmount = request.PenaltyAmount ?? 0,
-                PaymentMethod = request.PaymentMethod ?? string.Empty,
-                ReferenceNumber = request.ReferenceNumber
+                PrincipalAmount = request.PrincipalAmount,
+                InterestAmount = request.InterestAmount,
+                PenaltyAmount = request.PenaltyAmount,
+                PaymentMethod = request.PaymentMethod,
+                ReferenceNumber = request.ReferenceNumber,
+                CreatedById = Guid.TryParse(User.FindFirst("sub")?.Value, out Guid employeeId) ? employeeId : null,
             };
             var result = await Mediator.Send(command);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Reverse a completed payment. It stays in the history as Reversed with its reason, and the loan goes back
+        /// to what it was without it.
+        /// </summary>
+        [HttpPost("Reverse/{id:guid}")]
+        [Authorize(Roles = SystemRoles.AdminOrManager)]
+        public async Task<IActionResult> Reverse(Guid id, [FromBody] ReversePaymentRequest request)
+        {
+            var result = await Mediator.Send(new ReversePaymentCommand { Id = id, Reason = request.Reason ?? string.Empty });
             return Ok(result);
         }
     }

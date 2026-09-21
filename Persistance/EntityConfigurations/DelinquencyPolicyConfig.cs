@@ -35,6 +35,12 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.DaysUntilWriteOff)
                    .IsRequired();
 
+            // Late fees and delinquency read "the active policy": the database allows only one.
+            builder.HasIndex(x => x.IsActive)
+                   .IsUnique()
+                   .HasFilter("[IsActive] = 1 AND [IsDeleted] = 0")
+                   .HasDatabaseName("UX_DelinquencyPolicy_OneActive");
+
             builder.Property(x => x.AutomaticallyChargeLateFees)
                    .IsRequired()
                    .HasDefaultValue(true);

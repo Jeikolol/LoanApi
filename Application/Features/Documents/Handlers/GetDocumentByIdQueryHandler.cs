@@ -25,7 +25,7 @@ namespace Application.Features.Documents.Handlers
 
             const string query = @"
                 SELECT LD.Id, LD.LoanId, LD.DocumentType, LD.FileName, LD.FileUrl,
-                       LD.UploadedDate, LD.FileSizeBytes, LD.MimeType
+                       LD.UploadedDate, LD.FileSizeBytes, LD.MimeType, LD.StorageProvider
                 FROM [Loans].[LoanDocument] LD
                 WHERE LD.Id = @Id AND LD.IsDeleted = 0";
 

@@ -50,6 +50,9 @@ namespace Persistence.EntityConfigurations
                    .IsRequired(false)
                    .HasMaxLength(100);
 
+            builder.Property(x => x.ReversalReason)
+                   .HasMaxLength(250);
+
             builder.Property(x => x.Status)
                    .IsRequired();
         }

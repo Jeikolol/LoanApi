@@ -30,6 +30,12 @@ namespace Persistence.EntityConfigurations
                    .IsRequired()
                    .HasMaxLength(100);
 
+            builder.Property(x => x.PhoneCode)
+                   .HasMaxLength(6);
+
+            builder.Property(x => x.PhoneMask)
+                   .HasMaxLength(40);
+
             builder.HasMany(x => x.Customers)
                    .WithOne(x => x.Country)
                    .HasForeignKey(x => x.CountryId)

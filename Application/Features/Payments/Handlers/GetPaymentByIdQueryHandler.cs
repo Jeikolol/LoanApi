@@ -26,12 +26,12 @@ namespace Application.Features.Payments.Handlers
             const string query = @"
                 SELECT LP.Id, LP.LoanId, LP.PaymentDate, LP.PrincipalAmount, LP.InterestAmount,
                        LP.PenaltyAmount, LP.TotalPaymentAmount, LP.PaymentMethod, LP.ReferenceNumber,
-                       LP.Status, LP.CreatedOn
+                       LP.Status, LP.CreatedOn, LP.ReversalReason
                 FROM [Loans].[LoanPayment] LP
                 WHERE LP.Id = @Id AND LP.IsDeleted = 0";
 
-            var payment = await _connection.QueryFirstOrDefaultAsync<LoanPaymentResponse>(query, new { request.Id });
-            return payment ?? throw new NotFoundException($"Payment {request.Id} not found");
+            var payment = await _connection.QueryFirstOrDefaultAsync<PaymentRow>(query, new { request.Id });
+            return payment?.ToResponse() ?? throw new NotFoundException($"Payment {request.Id} not found");
         }
     }
 }

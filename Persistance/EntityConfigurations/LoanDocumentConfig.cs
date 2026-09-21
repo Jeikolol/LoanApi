@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -38,6 +39,13 @@ namespace Persistence.EntityConfigurations
 
             builder.Property(x => x.MimeType)
                    .IsRequired();
+
+            builder.Property(x => x.StorageProvider)
+                   .IsRequired()
+                   .HasDefaultValue(DocumentStorage.External);
+
+            builder.Property(x => x.StorageKey)
+                   .HasMaxLength(100);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Application.Models.Responses
         string PaymentMethod,
         string? ReferenceNumber,
         PaymentStatus Status,
-        DateTime CreatedOn
+        DateTime CreatedOn,
+        string? ReversalReason = null,
+        string? RegisteredBy = null
     );
 }

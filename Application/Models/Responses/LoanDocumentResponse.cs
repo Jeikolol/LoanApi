@@ -10,6 +10,7 @@ namespace Application.Models.Responses
         string FileUrl,
         DateTime UploadedDate,
         long FileSizeBytes,
-        string MimeType
+        MimeTypes MimeType,
+        DocumentStorage StorageProvider
     );
 }

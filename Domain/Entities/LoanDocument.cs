@@ -13,5 +13,11 @@ namespace Domain.Entities
         public DateTime UploadedDate { get; set; }
         public long FileSizeBytes { get; set; }
         public MimeTypes MimeType { get; set; } = MimeTypes.Pdf;
+
+        /// <summary>Where the file is kept; External documents only have a FileUrl.</summary>
+        public DocumentStorage StorageProvider { get; set; } = DocumentStorage.External;
+
+        /// <summary>The key the storage generated for the file (null for External documents).</summary>
+        public string? StorageKey { get; set; }
     }
 }

@@ -1,6 +1,8 @@
+using Application.Exceptions;
 using Application.Features.Documents.Commands;
 using Application.Models.Responses;
 using Dapper;
+using Domain.Enums;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Data;
@@ -22,6 +24,17 @@ namespace Application.Features.Documents.Handlers
         {
             _logger.LogInformation("Creating document for loan {LoanId}", request.LoanId);
 
+            var errors = DocumentRules.Validate(request.FileName, request.FileUrl, request.FileSizeBytes);
+            if (errors.Count > 0)
+                throw new ValidationException("The document is not valid.", errors);
+
+            var loanExists = await _connection.ExecuteScalarAsync<int>(
+                "SELECT COUNT(1) FROM [Loans].[Loan] WHERE Id = @LoanId AND IsDeleted = 0", new { request.LoanId });
+            if (loanExists == 0)
+                throw new NotFoundException($"Loan {request.LoanId} not found");
+
+            var fileName = request.FileName.Trim();
+            DocumentRules.TryGetMimeType(fileName, out var mimeType);
             var documentId = Guid.NewGuid();
             var now = DateTime.UtcNow;
 
@@ -41,19 +54,19 @@ namespace Application.Features.Documents.Handlers
                     Id = documentId,
                     request.LoanId,
                     DocumentType = (int)request.DocumentType,
-                    request.FileName,
+                    fileName,
                     request.FileUrl,
                     UploadedDate = now,
                     request.FileSizeBytes,
-                    request.MimeType,
+                    MimeType = (int)mimeType,
                     IsActive = true,
                     IsDeleted = false,
                     CreatedOn = now
                 });
 
                 return new LoanDocumentResponse(
-                    documentId, request.LoanId, request.DocumentType, request.FileName,
-                    request.FileUrl, now, request.FileSizeBytes, request.MimeType
+                    documentId, request.LoanId, request.DocumentType, fileName,
+                    request.FileUrl, now, request.FileSizeBytes, mimeType, DocumentStorage.External
                 );
             }
             catch (Exception ex)

@@ -5,12 +5,12 @@ namespace Application.Models.Responses.Dashboard
     /// All currency values are in RD$ (Dominican Pesos).
     /// </summary>
     public record PortfolioSummaryResponse(
-        /// <summary>Total principal amount in RD$</summary>
+        /// <summary>Principal still owed on loans being repaid, in RD$</summary>
         long TotalPortfolio,
         /// <summary>Delinquency rate as percentage (0-100)</summary>
         decimal DelinquencyRate,
-        /// <summary>Count of active loans (status = 3)</summary>
+        /// <summary>Count of loans being repaid (disbursed, active, partially paid, defaulted, restructured)</summary>
         int ActiveCredits,
-        /// <summary>Total collections for today in RD$</summary>
+        /// <summary>Total collected this calendar month in RD$</summary>
         long MonthlyCollections);
 }

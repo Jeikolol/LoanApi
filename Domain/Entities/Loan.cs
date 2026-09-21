@@ -1,4 +1,4 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 
 namespace Domain.Entities
 {
@@ -35,6 +35,12 @@ namespace Domain.Entities
         public decimal TotalInterestAmount { get; set; }
         public decimal PaidInterest { get; set; }
         public decimal RemainingInterest { get; set; }
+
+        /// <summary>Late fees charged so far. They are kept apart from the principal and the interest.</summary>
+        public decimal LateFeesCharged { get; set; }
+
+        /// <summary>The last day a late fee was charged for; each overdue day is charged once.</summary>
+        public DateOnly? LateFeesChargedThrough { get; set; }
 
         // Balance tracking
         public decimal AmortizationBalance { get; set; }

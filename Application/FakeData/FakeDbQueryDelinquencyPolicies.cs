@@ -18,7 +18,7 @@ namespace Application.FakeData
                 new DelinquencyPolicy
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Standard",
+                    Name = "Estándar",
                     DaysUntilEarlyDelinquency = 1,
                     EarlyDelinquencyPenalty = 0.05m,
                     DaysUntilSevereDelinquency = 30,
@@ -30,7 +30,8 @@ namespace Application.FakeData
                 new DelinquencyPolicy
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Aggressive",
+                    Name = "Agresiva",
+                    IsActive = false,
                     DaysUntilEarlyDelinquency = 0,
                     EarlyDelinquencyPenalty = 0.10m,
                     DaysUntilSevereDelinquency = 15,
@@ -42,7 +43,8 @@ namespace Application.FakeData
                 new DelinquencyPolicy
                 {
                     Id = Guid.NewGuid(),
-                    Name = "Conservative",
+                    Name = "Conservadora",
+                    IsActive = false,
                     DaysUntilEarlyDelinquency = 5,
                     EarlyDelinquencyPenalty = 0.03m,
                     DaysUntilSevereDelinquency = 45,

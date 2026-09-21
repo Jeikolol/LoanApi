@@ -19,5 +19,10 @@ namespace Domain.Entities
         public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.BankTransfer;
         public string? ReferenceNumber { get; set; }
         public PaymentStatus Status { get; set; } = PaymentStatus.Completed;
+
+        /// <summary>Why a completed payment was reversed (set together with the Reversed status).</summary>
+        public string? ReversalReason { get; set; }
+
+        public DateTime? ReversedOn { get; set; }
     }
 }

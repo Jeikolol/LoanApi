@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
@@ -21,6 +21,8 @@ namespace Persistence
         public DbSet<LoanDocument> LoanDocuments => Set<LoanDocument>();
         public DbSet<DelinquencyPolicy> DelinquencyPolicies => Set<DelinquencyPolicy>();
         public DbSet<CreditScore> CreditScores => Set<CreditScore>();
+        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+        public DbSet<StorageSetting> StorageSettings => Set<StorageSetting>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

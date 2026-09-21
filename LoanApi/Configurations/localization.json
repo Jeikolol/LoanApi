@@ -3,19 +3,10 @@
     "EnableLocalization": true,
     "ResourcesPath": "Localization",
     "SupportedCultures": [
-      "en-US",
-      "en",
-      "fr",
-      "fr-FR",
-      "de",
-      "de-DE",
-      "it",
-      "it-IT",
-      "pt",
-      "nl",
-      "nl-NL"
+      "es",
+      "en"
     ],
-    "DefaultRequestCulture": "en",
+    "DefaultRequestCulture": "es",
     "FallbackToParent": true
   }
 }
